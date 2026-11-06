@@ -56,7 +56,7 @@ Usa [Vercel Web Analytics](https://vercel.com/docs/analytics): cuenta visitas si
 ```
 index.html            el juego completo
 og.png                imagen de vista previa al compartir
-icon-*.png, favicon   íconos de la app
+icon-*-v2.png, favicon-v2.png   íconos de la app
 manifest.webmanifest  instalación como app (PWA)
 sw.js                 service worker: modo sin internet
 vercel.json           configuración de Vercel
