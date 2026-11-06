@@ -330,6 +330,8 @@ body.crt #crt{display:block}
 .about .ver{margin-top:12px;font-size:12px;color:#8fc7ad}
 .about .contact{color:var(--lime)}
 @media (orientation:landscape) and (max-height:520px){.about .abody{max-height:58vh}}
+.steps{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.45;color:#d6ecdf}.steps b{color:var(--yel)}
+#installBtn[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* Controles táctiles */
 #pad{position:fixed;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;padding:10px calc(12px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));pointer-events:none}
@@ -377,6 +379,7 @@ body[data-scr=fight] #fs{display:flex}
    <button class="mi" data-mode="vs2" id="m2p">2 jugadores<small>Con tu ra'a</small></button>
    <button class="mi" id="acctBtn">Mi cuenta Malo<small>Ups, nivel y cupones</small></button>
    <button class="mi" id="howT">Cómo jugar<small>Controles y trucos</small></button>
+   <button class="mi" id="installBtn" hidden>Instalar app<small>Jugá sin internet</small></button>
    <button class="mi" id="aboutBtn">Acerca de<small>Parodia, privacidad y contacto</small></button>
   </nav>
   <div class="foot"><button class="footlink" id="aboutFoot">Parodia. Personajes y banco ficticios. Acerca de</button><span class="credit">Crédito ₲ 0</span></div>
@@ -459,6 +462,14 @@ body[data-scr=fight] #fs{display:flex}
   <div class="row2"><span>Filtro CRT</span><button class="snd" data-crt aria-label="Filtro CRT"></button></div>
   <button class="link" id="howP">Ver controles</button>
   <p class="hint kbd">Esc o P para reanudar.</p>
+ </div>
+</section>
+<section class="sheet" id="scr-ios" hidden role="dialog" aria-modal="true" aria-labelledby="iosT">
+ <div class="panel">
+  <h2 id="iosT">Instalá Malo Bank</h2>
+  <p class="sub">En iPhone se instala desde Safari:</p>
+  <ol class="steps"><li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</li><li>Elegí <b>Agregar a pantalla de inicio</b>.</li><li>Tocá <b>Agregar</b>. Listo: se abre como app y funciona sin internet.</li></ol>
+  <button class="btn" id="iosClose">Entendido</button>
  </div>
 </section>
 <section class="sheet" id="scr-about" hidden role="dialog" aria-modal="true" aria-labelledby="abT">
@@ -557,7 +568,7 @@ const SFX={hit:()=>beep(180,.09,'square',.1,-110),block:()=>beep(520,.05,'triang
 
 /* ---------- input ---------- */
 const keys={};
-addEventListener('keydown',e=>{if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(!$('#scr-how').hidden){closeHow();return;}if(!$('#scr-about').hidden){closeAbout();return;}if(G.scr==='fight'){togglePause();e.preventDefault();return;}}keys[e.code]=true;audioUnlock();if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Slash','Quote'].includes(e.code)&&!(e.target&&e.target.tagName==='BUTTON'&&e.code==='Space'))e.preventDefault();});
+addEventListener('keydown',e=>{if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(!$('#scr-how').hidden){closeHow();return;}if(!$('#scr-about').hidden){closeAbout();return;}if(!$('#scr-ios').hidden){$('#scr-ios').hidden=true;return;}if(G.scr==='fight'){togglePause();e.preventDefault();return;}}keys[e.code]=true;audioUnlock();if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Slash','Quote'].includes(e.code)&&!(e.target&&e.target.tagName==='BUTTON'&&e.code==='Space'))e.preventDefault();});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;for(const k in touch)touch[k]=0;});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -1194,6 +1205,21 @@ function renderAcct(){const li=lvOf(ACCT.total),L=LV[li],N=LV[li+1];
 $('#acctBtn').addEventListener('click',()=>{SFX.ok();show('acct');});
 $('#acctBack').addEventListener('click',()=>{SFX.sel();show('title');});
 
+
+/* ---------- PWA: instalación y modo sin internet ---------- */
+let installEvt=null;
+const standalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||(window.matchMedia&&matchMedia('(display-mode: fullscreen)').matches)||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function refreshInstall(){const b=$('#installBtn');b.hidden=standalone()||!(installEvt||isIOS);}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;refreshInstall();});
+addEventListener('appinstalled',()=>{installEvt=null;refreshInstall();});
+$('#installBtn').addEventListener('click',async e=>{e.stopPropagation();SFX.ok();
+ if(installEvt){installEvt.prompt();try{await installEvt.userChoice;}catch(_){}installEvt=null;refreshInstall();return;}
+ if(isIOS){$('#scr-ios').hidden=false;setTimeout(()=>$('#iosClose').focus({preventScroll:true}),0);}});
+$('#iosClose').addEventListener('click',()=>{SFX.sel();$('#scr-ios').hidden=true;});
+if('serviceWorker' in navigator&&location.protocol==='https:'||location.hostname==='localhost'){
+ if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{});});}
+refreshInstall();
 /* ---------- Acerca de ---------- */
 const CONTACTO='bankmalo12@gmail.com';
 function openAbout(){const c=$('#contactLine');c.hidden=!CONTACTO;if(CONTACTO)c.textContent='Contacto: '+CONTACTO;$('#scr-about').hidden=false;setTimeout(()=>$('#aboutClose').focus({preventScroll:true}),0);}

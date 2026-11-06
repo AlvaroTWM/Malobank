@@ -8,7 +8,7 @@ Juego de peleas arcade 2D en pixel art, hecho en Paraguay. Gratuito, de humor, s
 
 ## Jugar
 
-**Celular:** tocá la pantalla (mejor en horizontal). Se puede usar "Agregar a pantalla de inicio".
+**Celular:** tocá la pantalla (mejor en horizontal). Es una PWA: desde el menú "Instalar app" queda en tu pantalla de inicio y funciona sin internet.
 
 **PC:**
 
@@ -55,7 +55,8 @@ Usa [Vercel Web Analytics](https://vercel.com/docs/analytics): cuenta visitas si
 index.html            el juego completo
 og.png                imagen de vista previa al compartir
 icon-*.png, favicon   íconos de la app
-manifest.webmanifest  instalación como app
+manifest.webmanifest  instalación como app (PWA)
+sw.js                 service worker: modo sin internet
 vercel.json           configuración de Vercel
 ```
 
