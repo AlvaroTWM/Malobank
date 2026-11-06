@@ -45,6 +45,10 @@ Para publicar en Vercel: importá el repositorio, Framework Preset **Other**, si
 
 Si publicás en otro dominio, actualizá las URLs de `og:image`, `og:url` y `twitter:image` en `index.html`.
 
+## Analíticas
+
+Usa [Vercel Web Analytics](https://vercel.com/docs/analytics): cuenta visitas sin cookies ni datos personales. Fuera de Vercel el script simplemente no carga.
+
 ## Estructura
 
 ```
