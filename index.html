@@ -194,7 +194,7 @@ h2,.logo,.press,.mi,.btn,.big strong,.vside strong,.vsmid b,.role,.topbar,.foot,
 .btn.ghost{background:var(--panel);color:var(--cream);box-shadow:4px 4px 0 #000;border-color:#000}
 :focus-visible{outline:3px solid var(--yel);outline-offset:2px}
 /* título */
-.at{align-items:center;justify-content:center;text-align:center;gap:10px}
+.at{align-items:center;justify-content:safe center;text-align:center;gap:10px}
 .topbar{width:100%;display:flex;justify-content:space-between;font-size:10px;color:var(--yel)}
 .topbar span:nth-child(2){color:var(--cream)}
 .logo{margin:0;display:flex;flex-direction:column;align-items:center;line-height:1}
@@ -208,8 +208,11 @@ h2,.logo,.press,.mi,.btn,.big strong,.vside strong,.vsmid b,.role,.topbar,.foot,
 .menu[hidden]{display:none}
 .mi{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 14px 10px 30px;font-size:13px;color:var(--cream);position:relative;border:3px solid transparent}
 .mi small{font:500 13px 'Pixelify Sans';color:#8fc7ad}
-.mi:hover,.mi:focus-visible,.mi.on{outline:0;border-color:#000;background:var(--panel);box-shadow:4px 4px 0 #000;color:var(--yel)}
-.mi:hover::before,.mi:focus-visible::before,.mi.on::before{content:'';position:absolute;left:10px;top:50%;margin-top:-5px;border:5px solid transparent;border-left:7px solid var(--yel);animation:blink .6s steps(1) infinite}
+.mi:focus-visible,.mi.on{outline:0;border-color:#000;background:var(--panel);box-shadow:4px 4px 0 #000;color:var(--yel)}
+.mi:focus-visible::before,.mi.on::before{content:'';position:absolute;left:10px;top:50%;margin-top:-5px;border:5px solid transparent;border-left:7px solid var(--yel);animation:blink .6s steps(1) infinite}
+@media (hover:hover){.mi:hover{outline:0;border-color:#000;background:var(--panel);box-shadow:4px 4px 0 #000;color:var(--yel)}.mi:hover::before{content:'';position:absolute;left:10px;top:50%;margin-top:-5px;border:5px solid transparent;border-left:7px solid var(--yel)}}
+body.touch .mi:focus-visible:not(.on){border-color:transparent;background:none;box-shadow:none;color:var(--cream)}
+body.touch .mi:focus-visible:not(.on)::before{content:none}
 .foot{width:100%;display:flex;justify-content:space-between;gap:12px;font-size:8px;color:#8fc7ad;margin-top:auto}
 .credit{color:var(--yel)}
 body.touch:not(.pad) #m2p{display:none}
@@ -332,6 +335,22 @@ body.crt #crt{display:block}
 @media (orientation:landscape) and (max-height:520px){.about .abody{max-height:58vh}}
 .steps{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.45;color:#d6ecdf}.steps b{color:var(--yel)}
 #installBtn[hidden]{display:none}
+
+/* vertical en celular */
+@media (orientation:portrait) and (max-width:720px){
+ .at{gap:8px}
+ .at .crew{width:min(340px,86vw)}
+ .menu{min-width:0;width:100%;gap:6px}
+ .mi{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:10px 12px 10px 30px;font-size:12px;text-align:left}
+ .mi small{font-size:13px}
+ .foot{flex-direction:column;align-items:center;gap:8px;text-align:center;margin-top:12px}
+ .footlink{font-size:7px;line-height:1.6}
+ .topbar{font-size:8px}
+}
+#rot{display:none;position:fixed;left:0;right:0;top:calc(14px + env(safe-area-inset-top));text-align:center;font:9px/1.6 'Press Start 2P',monospace;color:var(--yel);text-shadow:2px 2px 0 #000;pointer-events:none;padding:0 16px}
+#rot svg{display:block;margin:0 auto 8px;width:40px;height:40px;stroke:var(--yel);fill:none;stroke-width:2;animation:tilt 1.6s ease-in-out infinite}
+@keyframes tilt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait){body.touch[data-scr=fight] #rot,body.touch[data-scr=vs] #rot{display:block}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* Controles táctiles */
 #pad{position:fixed;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;padding:10px calc(12px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));pointer-events:none}
@@ -531,6 +550,7 @@ body[data-scr=fight] #fs{display:flex}
   <button class="btn" id="howClose">Entendido</button>
  </div>
 </section>
+<div id="rot" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>Girá el celular para jugar en grande</div>
 <div id="pad">
  <div class="grp" id="dir">
   <div class="b" id="bup" data-k="up" aria-label="Saltar"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></div>
