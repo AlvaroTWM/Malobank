@@ -1,5 +1,7 @@
 # Malo Bank: Intervención Total
 
+**Jugá en [malobank.app](https://malobank.app)**
+
 Juego de peleas arcade 2D en pixel art, hecho en Paraguay. Gratuito, de humor, sin fines de lucro y de código abierto.
 
 > **Parodia.** Todos los personajes, el banco "Malo Bank", los Ups, los niveles y los cupones son ficticios. Son caricaturas de situaciones generales, no retratos de personas. No tiene relación, patrocinio ni aval de ninguna entidad, empresa o persona real.
@@ -43,7 +45,7 @@ python3 -m http.server 8080
 
 Para publicar en Vercel: importá el repositorio, Framework Preset **Other**, sin comando de build.
 
-Si publicás en otro dominio, actualizá las URLs de `og:image`, `og:url` y `twitter:image` en `index.html`.
+Si publicás en otro dominio que no sea malobank.app, actualizá las URLs de `og:image`, `og:url` y `twitter:image` en `index.html`.
 
 ## Analíticas
 

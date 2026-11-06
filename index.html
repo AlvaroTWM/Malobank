@@ -16,12 +16,12 @@
 <meta property="og:site_name" content="Malo Bank">
 <meta property="og:title" content="Malo Bank: Intervención Total">
 <meta property="og:description" content="Juego de peleas arcade paraguayo. Elegí tu personaje y recuperá tu saldo a las piñas. Parodia: personajes y banco ficticios.">
-<meta property="og:image" content="https://malobank.vercel.app/og.png">
+<meta property="og:image" content="https://malobank.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="https://malobank.vercel.app/">
+<meta property="og:url" content="https://malobank.app/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://malobank.vercel.app/og.png">
+<meta name="twitter:image" content="https://malobank.app/og.png">
 <meta name="description" content="Juego de peleas arcade paraguayo, gratuito y de humor. Parodia: personajes y banco ficticios.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -467,8 +467,8 @@ body[data-scr=fight] #fs{display:flex}
 <section class="sheet" id="scr-ios" hidden role="dialog" aria-modal="true" aria-labelledby="iosT">
  <div class="panel">
   <h2 id="iosT">Instalá Malo Bank</h2>
-  <p class="sub">En iPhone se instala desde Safari:</p>
-  <ol class="steps"><li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</li><li>Elegí <b>Agregar a pantalla de inicio</b>.</li><li>Tocá <b>Agregar</b>. Listo: se abre como app y funciona sin internet.</li></ol>
+  <p class="sub">En iPhone se instala desde Safari o Chrome (iOS 16.4 o más nuevo):</p>
+  <ol class="steps"><li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba). En Chrome está en la barra de dirección.</li><li>Elegí <b>Agregar a pantalla de inicio</b>. Si no aparece, tocá <b>Más</b> o <b>Editar acciones</b>.</li><li>Tocá <b>Agregar</b>. Listo: se abre como app y funciona sin internet.</li></ol>
   <button class="btn" id="iosClose">Entendido</button>
  </div>
 </section>
@@ -631,7 +631,7 @@ let P1=null,P2=null,projs=[],parts=[],pops=[],fx=[],shake=0;
 function hurt(f){const c=f.crouch&&f.y>=GROUND&&f.st!=='ko'&&f.st!=='down';return c?{x:f.x-11,y:f.y-42,w:22,h:42}:{x:f.x-10,y:f.y-58,w:20,h:58};}
 function hitbox(f,a){const x1=f.x+f.face*a.rx,x2=f.x+f.face*(a.rx+a.rw);return{x:Math.min(x1,x2),y:f.y+a.ry,w:a.rw,h:a.rh};}
 function spark(x,y,col,n){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*4,vy:(Math.random()-.8)*3,life:12+Math.random()*10|0,col});}
-function pop(x,y,s,col,size,life){pops.push({x,y,s,col,size:size||7,life:life||40,max:life||40});}
+function pop(x,y,s,col,size,life){for(let k=0;k<6;k++){if(pops.some(q=>Math.abs(q.y-y)<9&&Math.abs(q.x-x)<70&&q.life>q.max*.4))y-=10;else break;}pops.push({x,y,s,col,size:size||7,life:life||40,max:life||40});}
 function banner(f,name){pop(f.x,f.y-74,'¡'+name+'!','#ffd23f',7,60);}
 
 function doHit(a,d,dmg,stun,kb,opt){opt=opt||{};
