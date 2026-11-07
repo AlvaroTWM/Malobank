@@ -1085,7 +1085,58 @@ function stVault(t){R(0,0,W,GROUND,'#1b1e24');const po=par(.1);for(let x=po%32-3
  // alarma
  ctx.globalAlpha=.06+.08*Math.abs(Math.sin(t*.08));ctx.fillStyle='#ff2020';ctx.fillRect(0,0,W,H);ctx.globalAlpha=1;
  if((t*7)%97<3){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,0,W,H);}}
-const STAGES=[{name:'TORRE MALO BANK, ASU',draw:stTower},{name:'CAJERO A 40°C, ASU',draw:stAtm},{name:'MERCADO 4',draw:stMarket},{name:'LA BÓVEDA (VACÍA)',draw:stVault}];
+// patio de pastelería del barrio: toldo a rayas, bandera en el balcón, lapacho grande y baldosas
+const PAST_LEAVES=(()=>{const r=srand(23),a=[];for(let i=0;i<70;i++){const right=i<52;const lx=right?150+r()*300:-70+r()*170,ly=right?-14+r()*84:-14+r()*56,s=7+r()*11|0;if(lx>95&&lx<225&&ly>24)continue;a.push([lx,ly,s,r()*3|0,r()*6]);}return a;})();
+function stBakery(t){sky('#8fd0f0','#d8eef8');
+ const o1=par(.08);R(o1-70,18,W+160,GROUND-18,'#f2ead0');
+ const ox=OXS()+par(.12);ctx.save();ctx.translate(ox,0);
+ R(-80,14,560,GROUND-14,'#f2ead0');
+ // planta alta: ventana y balcón con la bandera
+ R(64,30,16,40,'#1f2c4d');for(let y=33;y<68;y+=6)R(66,y,12,4,'#cfe3f0');R(71,30,2,40,'#1f2c4d');
+ R(112,74,86,4,'#1f2c4d');R(112,48,86,2,'#1f2c4d');for(let x=112;x<=196;x+=5)R(x,48,1,26,'#1f2c4d');R(186,34,12,40,'#1f2c4d');
+ for(let i=0;i<48;i++){const w=Math.round(Math.sin(t*.06-i*.25)*1.2*(i/48));R(124+i,50+w,1,6,'#d52b1e');R(124+i,56+w,1,6,'#ffffff');R(124+i,62+w,1,6,'#0038a8');}
+ R(146,57+Math.round(Math.sin(t*.06-5.5)*.6),4,4,'#f2c94c');R(147,58+Math.round(Math.sin(t*.06-5.5)*.6),2,2,'#2e7d32');
+ // pérgola con enredadera
+ R(-40,90,240,4,'#1f2c4d');for(let x=-30;x<200;x+=26)R(x,84,10,6,'#8a5a32');
+ R(-40,94,240,GROUND-94,'#d6d0c0');R(28,124,34,34,'#eee9dc');R(34,120,20,6,'#eee9dc');
+ R(-40,100,26,GROUND-100,'#2a2f3a');for(let x=-38;x<-14;x+=4)R(x,100,2,GROUND-100,'#4a5060');
+ T('PASTELERÍA',120,120,'#1f2c4d',8,'center',false);T('DEL BARRIO',120,128,'#b8653a',4,'center',false);
+ const vr=srand(5);for(let i=0;i<34;i++){const vx=-40+vr()*236|0,vl=3+vr()*16|0,sw=Math.round(Math.sin(t*.03+i)*.8);R(vx+sw,94,3,vl,i%3?'#4f7d3a':'#3d6630');if(i%4===0)R(vx+sw,94+vl-2,2,2,'#e2566b');}
+ R(198,98,20,GROUND-98,'#7f8fb8');box(198,98,20,GROUND-98,'#1f2c4d');R(213,138,2,10,'#d8dde8');
+ // planta baja derecha: mostrador con toldo
+ R(222,90,220,2,'#1f2c4d');R(248,112,88,42,'#d9a35e');R(250,114,22,40,'#c08850');R(276,124,14,30,'#3a2a20');box(248,112,88,42,'#1f2c4d',2);R(244,152,96,4,'#8a96b8');
+ R(294,134,40,18,'#eef4f6');box(294,134,40,18,'#9aa');const pc=['#f6d38a','#c46a3c','#fff3e0','#e88fa3','#7a4a2a'];for(let i=0;i<6;i++){R(297+i*6,146,5,3,pc[i%5]);R(297+i*6,139,5,3,pc[(i+2)%5]);}
+ const pk=(t>>6)%5;if(pk<3){const hy=pk===1?0:2;R(304,124+hy,9,9,'#c68642');R(303,123+hy,11,3,'#ffffff');R(302,132+hy,13,4,'#ffffff');}
+ T('PASTELERÍA',236,124,'#c0392b',4,'center',false);R(234,126,4,8,'#8a5a32');
+ for(let i=0;i<24;i++)R(222+i*9,92,9,14,i%2?'#ffffff':'#d63a3a');for(let i=0;i<24;i++)R(222+i*9+2,106,5,2,i%2?'#ffffff':'#d63a3a');R(222,92,216,1,'#a82828');
+ // lapacho: tronco y ramas
+ R(344,58,12,GROUND-58,'#7a5236');R(352,58,4,GROUND-58,'#5e3d27');R(334,74,14,4,'#7a5236');R(322,64,14,4,'#7a5236');R(356,82,24,4,'#7a5236');R(296,50,30,3,'#7a5236');
+ // plantas en macetas
+ const pot=(x,h)=>{R(x-6,GROUND-10,12,10,'#b5653b');R(x-7,GROUND-11,14,2,'#9a5230');for(let k=0;k<5;k++)R(x-6+k*3,GROUND-10-h+((k*5)%4),3,h,k%2?'#3e7a3a':'#57964a');};
+ pot(-6,14);pot(186,12);pot(232,16);pot(372,14);
+ ctx.restore();
+ // muebles del patio y público (tus vecinos sentados)
+ const fx=OXS()+par(.25);ctx.save();ctx.translate(fx,0);
+ const chair=(x,c)=>{ctx.strokeStyle=c;ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(x,GROUND-20,8,7,0,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.ellipse(x,GROUND-20,5,4,0,0,Math.PI*2);ctx.stroke();R(x-6,GROUND-14,1,14,c);R(x+5,GROUND-14,1,14,c);R(x-1,GROUND-13,1,13,c);};
+ const table=(x)=>{R(x-9,GROUND-20,18,2,'#5a3a24');R(x-1,GROUND-18,2,18,'#3a2a1c');R(x-5,GROUND-1,10,1,'#3a2a1c');R(x-3,GROUND-23,6,2,'#ffffff');R(x-2,GROUND-25,4,2,'#f6d38a');};
+ const amp=1+Math.min(3,G.hype*1.2),fan=(x,c,sk,ph,cup)=>{const b=Math.round(Math.abs(Math.sin(G.t*(.05+Math.min(.12,G.hype*.04))+ph))*amp);R(x-4,GROUND-34-b,8,12,c);R(x-3,GROUND-41-b,6,7,sk);R(x-3,GROUND-42-b,6,2,'#2a1a10');if(cup){R(x+4,GROUND-32-b,3,5,'#2e8b57');R(x+5,GROUND-37-b,1,5,'#cfcfcf');}else if(G.hype>1.2){const up=(G.t>>3)%2;R(x-6,GROUND-42-b-up*2,2,7,c);R(x+4,GROUND-42-b-(1-up)*2,2,7,c);}};
+ chair(20,'#3a4a6a');fan(20,'#c0392b','#e0ac69',0,true);table(40);chair(60,'#2e5a3a');R(54,GROUND-24,12,4,'#c84a4a');
+ chair(84,'#3a4a6a');R(80,GROUND-26,8,5,'#d9a066');R(86,GROUND-28,3,3,'#d9a066');
+ chair(326,'#222832');fan(326,'#2980b9','#8d5524',2,false);table(350);chair(374,'#222832');fan(374,'#16a085','#f1c27d',4,true);
+ // perro echado que mueve la cola
+ const dx=226,wag=(t>>3)%2;R(dx,GROUND-8,20,7,'#f4f1ea');R(dx+16,GROUND-14,9,9,'#f4f1ea');R(dx+15,GROUND-15,3,4,'#e0d6c4');R(dx+23,GROUND-10,3,2,'#333');R(dx+20,GROUND-12,1,1,'#222');R(dx+16,GROUND-7,8,2,'#2c4a8a');R(dx-4,GROUND-6-wag*3,5,2,'#f4f1ea');R(dx+18,GROUND-2,8,2,'#f4f1ea');
+ ctx.restore();
+ // pajarito de cabeza roja: posa en la pérgola y de vez en cuando vuela
+ const bc=t%900,box0=OXS()+par(.12);let bxp=box0+150,byp=86;if(bc>700){const k=(bc-700)/200;bxp=box0+150+k*260;byp=86-Math.sin(k*Math.PI)*50;}
+ const flap=bc>700&&(t>>2)%2;R(Math.round(bxp),Math.round(byp),6,4,'#2a2a2a');R(Math.round(bxp)+4,Math.round(byp)-3,4,4,'#e0302a');R(Math.round(bxp)+8,Math.round(byp)-2,2,1,'#d9a520');R(Math.round(bxp)-2,Math.round(byp)+1,3,2,'#2a2a2a');if(flap)R(Math.round(bxp)+1,Math.round(byp)-3,4,3,'#444');
+ // copa del árbol (más cerca, tapa el cielo arriba)
+ const co=OXS()+par(.2);for(const [lx,ly,s,c,ph] of PAST_LEAVES){const sw=Math.round(Math.sin(t*.02+ph)*1);ctx.fillStyle=['#3f6b2f','#55873c','#6f9f45'][c];ctx.beginPath();ctx.arc(co+lx+sw,ly,s,0,Math.PI*2);ctx.fill();}
+ // hojas que caen
+ for(let i=0;i<6;i++){const lx=((i*83+t*.3+Math.sin(t*.04+i)*10)%(W+20))-10,ly=((t*.35+i*41)%(GROUND+20))-10;R(Math.round(lx),Math.round(ly),2,2,i%2?'#6f9f45':'#a8b84a');}
+ // baldosas de terracota con sombras de hojas
+ R(0,GROUND,W,H-GROUND,'#b8653a');const fo=par(.6)%20;for(let y=GROUND+6,r=0;y<H;y+=8,r++)R(0,y,W,1,'#9a5230');for(let r=0;r<4;r++){const y0=GROUND+r*8-(r?2:0);for(let x=fo-20+(r%2)*10;x<W;x+=20)R(x,Math.max(GROUND,y0),1,8,'#9a5230');}R(0,GROUND,W,2,'#d07a4a');
+ ctx.globalAlpha=.18;ctx.fillStyle='#3a1f10';for(let i=0;i<9;i++){ctx.beginPath();ctx.ellipse((i*61+par(.6))%(W+60)-30,GROUND+10+(i*7)%20,14,3,0,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;}
+const STAGES=[{name:'TORRE MALO BANK, ASU',draw:stTower},{name:'CAJERO A 40°C, ASU',draw:stAtm},{name:'MERCADO 4',draw:stMarket},{name:'LA BÓVEDA (VACÍA)',draw:stVault},{name:'PASTELERÍA DEL BARRIO, ASU',draw:stBakery}];
 
 /* ---------- música chiptune ---------- */
 const MUS={key:null,song:null,step:0,next:0,tr:0,bpm:120,gain:null};
@@ -1094,7 +1145,7 @@ const SONGS={
  title:{bpm:112,roots:[38,34,36,33],lead:[74,0,77,76,74,72,74,0,70,0,74,72,70,69,70,0,72,0,76,74,72,71,72,79,76,0,73,0,76,0,81,0],bass:[0,null,null,12,null,null,0,null,0,null,null,12,null,7,null,null],drum:'k...s...k.k.s...'},
  fightA:{bpm:150,roots:[45,41,43,40],lead:[69,72,76,74,72,69,67,69,65,69,72,74,72,69,72,0,67,71,74,76,74,71,79,76,76,74,72,71,68,71,74,76],bass:[0,null,12,0,null,0,12,null,0,null,12,0,null,7,12,null],drum:'k.h.s.h.k.hks.h.'},
  fightB:{bpm:140,roots:[48,45,41,43],lead:[72,76,79,76,72,74,76,79,81,79,76,72,76,79,81,0,77,76,74,72,74,77,81,77,79,0,79,81,79,77,76,74],bass:[0,null,7,null,12,null,7,null,0,null,7,null,12,null,7,12],drum:'k.h.shh.k.h.s.hh'}};
-const STAGE_SONG=[['fightA',0,150],['fightB',0,140],['fightB',2,146],['fightA',-3,118]];
+const STAGE_SONG=[['fightA',0,150],['fightB',0,140],['fightB',2,146],['fightA',-3,118],['fightB',5,132]];
 let NOISE=null;
 function noiseBuf(){if(NOISE)return NOISE;const b=AC.createBuffer(1,AC.sampleRate*.3|0,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return NOISE=b;}
 function tone(f,t,d,type,v){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(g);g.connect(MUS.gain);o.start(t);o.stop(t+d+.02);}
@@ -1151,7 +1202,7 @@ function draw(){G.btns=[];ctx.setTransform(SC,0,0,SC,0,0);ctx.imageSmoothingEnab
 
 /* ---------- interfaz (HTML) ---------- */
 const $=q=>document.querySelector(q);
-const STAGE_NM=['Torre Malo Bank, Asunción','Cajero a 40°C, Asunción','Mercado 4','La bóveda (vacía)'];
+const STAGE_NM=['Torre Malo Bank, Asunción','Cajero a 40°C, Asunción','Mercado 4','La bóveda (vacía)','Patio de la pastelería del barrio, Asunción'];
 function portrait(cvs,ch,pose,fr){const x=cvs.getContext('2d');x.imageSmoothingEnabled=false;x.clearRect(0,0,cvs.width,cvs.height);x.drawImage(sprite(ch,pose||'guard',fr||0,false),14,6,60,80,0,0,60,80);}
 function drawCrew(){const c=$('#crew');if(!c)return;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.clearRect(0,0,c.width,c.height);
  CH.forEach((ch,i)=>{const im=sprite(ch,'guard',((G.t>>4)+i)&1,false);x.save();if(i>=3){x.translate(i*44+60,0);x.scale(-1,1);x.drawImage(im,14,6,60,80,0,0,60,80);}else x.drawImage(im,14,6,60,80,i*44,0,60,80);x.restore();});}
