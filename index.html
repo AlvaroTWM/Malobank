@@ -278,6 +278,9 @@ dl{border-color:#2b5c47}dt{color:#8fc7ad}dd{color:var(--cream)}
 body[data-gm=online] .selbar .opts{visibility:hidden}
 /* paneles */
 .sheet{background:rgba(5,20,14,.78)}
+#scr-inst{background:var(--deep) linear-gradient(rgba(0,0,0,.18) 50%,transparent 50%) 0 0/100% 4px;-webkit-backdrop-filter:none;backdrop-filter:none}
+.instbox{margin:auto;width:min(320px,100%);display:flex;flex-direction:column;align-items:center;gap:clamp(24px,7vh,48px)}
+.instbtns{width:100%;display:flex;flex-direction:column;gap:16px}.instbtns .btn{width:100%;padding:16px}
 .panel{border-radius:0;background:var(--panel);border:4px solid #000;box-shadow:0 0 0 3px var(--lime),8px 8px 0 3px #000;color:var(--cream)}
 .panel h2{color:var(--yel);text-shadow:3px 3px 0 #000;font-size:18px}
 .panel .sub,.row2,.how p,.keys th{color:#b9dccb}.row2{border-color:#2b5c47}
@@ -304,6 +307,7 @@ body.crt #crt{display:block}
 #bsu{background:rgba(255,210,63,.12);border-color:rgba(255,210,63,.45);color:rgba(255,255,255,.6)}
 #bsu.ready{background:rgba(255,210,63,.45);border-color:var(--yel);color:#fff}
 @media (orientation:landscape) and (max-height:520px){
+ .instbox{flex-direction:row;width:min(640px,100%);gap:32px}.instbox>*{flex:1}.instbtns{gap:12px}
  .logo span{font-size:clamp(28px,11vh,60px)}.at{gap:4px}.at .crew{width:min(300px,40vw);margin:0}.l3{font-size:12px}
  .menu{grid-template-columns:1fr 1fr;min-width:min(560px,90vw);gap:6px}.mi{padding:7px 10px 7px 26px;font-size:10px}.mi small{display:none}
  .topbar{font-size:8px}
@@ -518,11 +522,16 @@ body[data-scr=fight] #fs{display:flex}
   <p class="hint kbd">Esc o P para reanudar.</p>
  </div>
 </section>
+<section class="sheet" id="scr-inst" hidden role="dialog" aria-modal="true" aria-label="Bienvenida">
+ <div class="instbox">
+  <div><div class="logo"><span class="l1">MALO</span><span class="l2">BANK</span></div><p class="l3">Intervención total</p></div>
+  <div class="instbtns"><button class="btn" id="instGo">Instalar</button><button class="btn ghost" id="instPlay">Jugar online</button></div>
+ </div>
+</section>
 <section class="sheet" id="scr-ios" hidden role="dialog" aria-modal="true" aria-labelledby="iosT">
  <div class="panel">
-  <h2 id="iosT">Instalá Malo Bank</h2>
-  <p class="sub">En iPhone se instala desde Safari o Chrome (iOS 16.4 o más nuevo):</p>
-  <ol class="steps"><li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba). En Chrome está en la barra de dirección.</li><li>Elegí <b>Agregar a pantalla de inicio</b>. Si no aparece, tocá <b>Más</b> o <b>Editar acciones</b>.</li><li>Tocá <b>Agregar</b>. Listo: se abre como app y funciona sin internet.</li></ol>
+  <h2 id="iosT">Instalá el juego</h2>
+  <ol class="steps"><li>Tocá el botón <b>Compartir</b></li><li>Seleccioná <b>Agregar a pantalla de inicio</b></li></ol>
   <button class="btn" id="iosClose">Entendido</button>
  </div>
 </section>
@@ -890,7 +899,7 @@ function update(){
  if(pr.start&&G.scr==='fight'){togglePause();}
  const anyPr=pr.punch||pr.kick||pr.special||pr.super||pr.up||pr.down||pr.left||pr.right||pr.start;
  if(G.scr==='fight'&&G.mode==='demo'&&(anyPr||tap)){show('title');return;}
- if(G.scr==='title'){
+ if(G.scr==='title'&&!instOpen()){
   if(G.tsub==='press'){if(anyPr){SFX.ok();openMenu();}else if(++G.idle>1100)startDemo();}
   else{if(pr.up)moveMenu(-1);if(pr.down)moveMenu(1);if(pr.punch&&!keys.Enter){const it=menuItems()[G.mi];if(it)it.click();}if(pr.kick){closeMenu();}if(anyPr)G.idle=0;else if(++G.idle>1800)startDemo();}}
  else if(G.scr==='select'){
@@ -1386,16 +1395,28 @@ $('#acctBack').addEventListener('click',()=>{SFX.sel();show('title');});
 let installEvt=null;
 const standalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||(window.matchMedia&&matchMedia('(display-mode: fullscreen)').matches)||navigator.standalone===true;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-function refreshInstall(){const b=$('#installBtn');b.hidden=standalone()||!(installEvt||isIOS);}
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;refreshInstall();});
-addEventListener('appinstalled',()=>{installEvt=null;refreshInstall();});
-$('#installBtn').addEventListener('click',async e=>{e.stopPropagation();SFX.ok();
- if(installEvt){installEvt.prompt();try{await installEvt.userChoice;}catch(_){}installEvt=null;refreshInstall();return;}
- if(isIOS){$('#scr-ios').hidden=false;setTimeout(()=>$('#iosClose').focus({preventScroll:true}),0);}});
-$('#iosClose').addEventListener('click',()=>{SFX.sel();$('#scr-ios').hidden=true;});
+function refreshInstall(){const can=!!(installEvt||isIOS);$('#installBtn').hidden=standalone()||!can;$('#instGo').hidden=!can;}
+/* bienvenida: pantalla completa con Instalar / Jugar online, solo en el navegador del celular */
+const instOpen=()=>!$('#scr-inst').hidden;
+function instSeen(){try{return localStorage.getItem('malobank_inst')==='1';}catch(e){return false;}}
+function hideInst(){$('#scr-inst').hidden=true;try{localStorage.setItem('malobank_inst','1');}catch(e){}}
+function maybeShowInst(){if(instOpen()||standalone()||!isTouch||instSeen()||G.scr!=='title'||G.tsub!=='press'||document.querySelector('.sheet:not([hidden])'))return;
+ $('#scr-inst').hidden=false;setTimeout(()=>$('#instGo').focus({preventScroll:true}),0);}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;refreshInstall();if(!isIOS)maybeShowInst();});
+addEventListener('appinstalled',()=>{installEvt=null;refreshInstall();hideInst();});
+/* instala con el aviso del navegador (Android/Chrome) o abre la guía en iPhone; devuelve true si aceptó */
+async function askInstall(){
+ if(installEvt){const ev=installEvt;installEvt=null;ev.prompt();let ok=false;try{const c=await ev.userChoice;ok=!!c&&c.outcome==='accepted';}catch(_){}refreshInstall();return ok;}
+ if(isIOS){$('#scr-ios').hidden=false;setTimeout(()=>$('#iosClose').focus({preventScroll:true}),0);}
+ return false;}
+$('#installBtn').addEventListener('click',e=>{e.stopPropagation();SFX.ok();askInstall();});
+$('#instGo').addEventListener('click',async()=>{audioUnlock();SFX.ok();if(await askInstall())hideInst();});
+$('#instPlay').addEventListener('click',()=>{audioUnlock();SFX.ok();hideInst();openMenu();});
+$('#iosClose').addEventListener('click',()=>{SFX.sel();$('#scr-ios').hidden=true;if(instOpen())$('#instGo').focus({preventScroll:true});});
 if('serviceWorker' in navigator&&location.protocol==='https:'||location.hostname==='localhost'){
  if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{});});}
 refreshInstall();
+if(isIOS)maybeShowInst();
 /* ---------- Acerca de ---------- */
 const CONTACTO='bankmalo12@gmail.com';
 function openAbout(){const c=$('#contactLine');c.hidden=!CONTACTO;if(CONTACTO)c.textContent='Contacto: '+CONTACTO;$('#scr-about').hidden=false;setTimeout(()=>$('#aboutClose').focus({preventScroll:true}),0);}
@@ -1404,7 +1425,7 @@ $('#aboutBtn').addEventListener('click',e=>{e.stopPropagation();SFX.sel();openAb
 $('#aboutFoot').addEventListener('click',e=>{e.stopPropagation();SFX.sel();openAbout();});
 $('#aboutClose').addEventListener('click',()=>{SFX.sel();closeAbout();});
 $('#wipe').addEventListener('click',()=>{const b=$('#wipe');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='Tocá de nuevo para confirmar';return;}
- try{localStorage.removeItem('malobank');localStorage.removeItem('malobank_acct');}catch(e){}
+ try{localStorage.removeItem('malobank');localStorage.removeItem('malobank_acct');localStorage.removeItem('malobank_inst');}catch(e){}
  ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null};G.hi=0;G.suit=false;b.dataset.ok='';b.textContent='Progreso borrado';SFX.ok();$('#hiScore').textContent='RÉCORD 000000';});
 /* ---------- menú arcade y demo ---------- */
 function menuItems(){return [...document.querySelectorAll('.mi')].filter(b=>b.offsetParent!==null);}
@@ -1413,7 +1434,7 @@ function openMenu(){G.tsub='menu';G.idle=0;$('#press').hidden=true;$('#menu').hi
 function closeMenu(){G.tsub='press';G.idle=0;$('#menu').hidden=true;$('#press').hidden=false;}
 function moveMenu(d){const n=menuItems().length;G.mi=(G.mi+d+n)%n;SFX.sel();markMenu();}
 function startDemo(){G.mode='demo';G.cup=null;const a=Math.random()*CH.length|0;let b;do{b=Math.random()*CH.length|0;}while(b===a);beginMatch(a,b,true);}
-$('#scr-title').addEventListener('click',e=>{if(G.scr==='title'&&G.tsub==='press'){audioUnlock();SFX.ok();openMenu();}});
+$('#scr-title').addEventListener('click',e=>{if(G.scr==='title'&&G.tsub==='press'&&!instOpen()){audioUnlock();SFX.ok();openMenu();}});
 document.querySelectorAll('.mi').forEach((b,i)=>b.addEventListener('mouseenter',()=>{G.mi=menuItems().indexOf(b);markMenu();}));
 function drawBig(cvs,ch,q){const x=cvs.getContext('2d');x.imageSmoothingEnabled=false;x.clearRect(0,0,cvs.width,cvs.height);
  if(ch){x.drawImage(sprite(ch,'guard',(G.t>>4)&1,false),14,6,60,80,0,0,60,80);return;}
