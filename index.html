@@ -271,6 +271,16 @@ dl{border-color:#2b5c47}dt{color:#8fc7ad}dd{color:var(--cream)}
 .onjoin{display:grid;grid-template-columns:1fr auto;gap:8px}
 .onjoin input{font:14px 'Press Start 2P',monospace;background:#0a2219;color:var(--cream);border:3px solid #000;outline:2px solid #2b5c47;outline-offset:-5px;padding:10px;text-align:center;text-transform:uppercase;min-width:0}
 .onjoin input:focus{outline-color:var(--yel)}
+.rank h2{margin:0}.rksub{margin:-6px 0 0;color:#8fc7ad;font-size:14px}
+#rkName{text-transform:none}
+.rklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;text-align:left}
+.rklist li{display:grid;grid-template-columns:2.6em 1fr auto;gap:8px;align-items:center;padding:6px 10px;background:#0a2219;border:2px solid #000;font:11px 'Press Start 2P',monospace;color:var(--cream)}
+.rklist li b{color:var(--yel)}.rklist li .u{color:var(--lime)}.rklist li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rklist li:nth-child(1) b{color:#ffd23f}.rklist li:nth-child(2) b{color:#d8e0e8}.rklist li:nth-child(3) b{color:#e09a5a}
+.rklist li.me{outline:2px solid var(--yel);outline-offset:-4px}
+.rklist li.empty{display:block;text-align:center;font:14px 'Pixelify Sans',sans-serif;color:#8fc7ad}
+.rkme[hidden]{display:none}.rkme{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;color:var(--cream);font-size:15px}
+@media (max-height:520px){.rank{gap:8px}.rklist li{padding:3px 8px;font-size:9px}}
 .onlbl{font-size:13px;color:#8fc7ad}
 .oncode{font:clamp(20px,6vw,32px) 'Press Start 2P',monospace;color:var(--lime);text-shadow:3px 3px 0 #000;letter-spacing:2px}
 .onfine{margin:0;font-size:12px;color:#8fc7ad}
@@ -418,6 +428,7 @@ body[data-scr=fight] #fs{display:flex}
    <button class="mi" data-mode="vs2" id="m2p">2 jugadores<small>Con tu ra'a</small></button>
    <button class="mi" id="onlineBtn">Online<small>Con un amigo, por código</small></button>
    <button class="mi" id="acctBtn">Mi cuenta Malo<small>Ups, nivel y cupones</small></button>
+   <button class="mi" id="rankBtn">Ranking<small>Top 10 de Ups</small></button>
    <button class="mi" id="howT">Cómo jugar<small>Controles y trucos</small></button>
    <button class="mi" id="installBtn" hidden>Instalar app<small>Jugá sin internet</small></button>
    <button class="mi" id="aboutBtn">Acerca de<small>Parodia, privacidad y contacto</small></button>
@@ -462,6 +473,23 @@ body[data-scr=fight] #fs{display:flex}
     <dl class="astats"><dt>Peleas</dt><dd id="aF"></dd><dt>Ganadas</dt><dd id="aW"></dd><dt>Saldo promedio</dt><dd id="aAvg"></dd><dt>Mejor combo</dt><dd id="aBest"></dd><dt>Beneficio del nivel</dt><dd id="aPerk"></dd></dl>
    </div>
    <div class="shop"><h3>Cupones</h3><div id="shop"></div><p class="fine2">Los Ups no vencen. Por ahora. Reintegros sujetos a aprobación del Regulador Ape'a.</p></div>
+  </div>
+ </div>
+</section>
+<section class="screen" id="scr-rank" hidden>
+ <div class="inner">
+  <div class="receipt onl rank">
+   <h2>Ranking Malo Bank</h2>
+   <p class="rksub">Los 10 clientes con más Ups ganados</p>
+   <form id="rkForm" class="onstack" hidden>
+    <label class="onlbl" for="rkName" id="rkAsk">Elegí tu nombre de usuario para entrar al ranking</label>
+    <div class="onjoin"><input id="rkName" maxlength="14" autocomplete="nickname" autocapitalize="off" spellcheck="false" placeholder="TU NOMBRE" aria-label="Nombre de usuario"><button class="btn" id="rkSave" type="submit">Guardar</button></div>
+    <p class="onfine">Se ve en el ranking junto con tus Ups. Usá un apodo, no tu nombre real.</p>
+   </form>
+   <p class="onmsg" id="rkMsg" aria-live="polite"></p>
+   <ol class="rklist" id="rkList"></ol>
+   <div class="rkme" id="rkMe" hidden><span id="rkMeTxt"></span><button class="back" id="rkEdit" type="button">Cambiar nombre</button></div>
+   <button class="back" id="rkBack">Volver</button>
   </div>
  </div>
 </section>
@@ -548,7 +576,7 @@ body[data-scr=fight] #fs{display:flex}
    <h3>Sin fines de lucro</h3>
    <p>No vende nada, no tiene publicidad y no pide donaciones.</p>
    <h3>Privacidad</h3>
-   <p>No pedimos ni guardamos datos personales. Tu progreso (Ups, nivel, cupones, récord y opciones) queda guardado solo en este navegador. Podés borrarlo cuando quieras. Para saber cuánta gente juega contamos visitas de forma anónima con Vercel Web Analytics, sin cookies ni datos personales.</p>
+   <p>No pedimos ni guardamos datos personales. Tu progreso (Ups, nivel, cupones, récord y opciones) queda guardado solo en este navegador. Podés borrarlo cuando quieras. Si entrás al ranking, el apodo que elijas y tus Ups ganados se guardan en Supabase y los ve cualquiera; al borrar tu progreso también salís del ranking. Para saber cuánta gente juega contamos visitas de forma anónima con Vercel Web Analytics, sin cookies ni datos personales.</p>
    <button class="btn ghost" id="wipe">Borrar mi progreso</button>
    <h3>Modo online</h3>
    <p>Para encontrarse con el código usamos Supabase Realtime: solo pasa el código de la sala y los datos técnicos para conectarse, y no se guarda nada. Después los dos dispositivos se conectan directo entre sí (WebRTC) y por eso cada uno ve la dirección IP del otro. Durante la pelea solo se mandan los botones que tocás.</p>
@@ -634,7 +662,7 @@ const SFX={hit:()=>beep(180,.09,'square',.1,-110),block:()=>beep(520,.05,'triang
 
 /* ---------- input ---------- */
 const keys={};
-addEventListener('keydown',e=>{if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(!$('#scr-how').hidden){closeHow();return;}if(!$('#scr-about').hidden){closeAbout();return;}if(!$('#scr-ios').hidden){$('#scr-ios').hidden=true;return;}if(G.scr==='fight'){togglePause();e.preventDefault();return;}}keys[e.code]=true;audioUnlock();if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Slash','Quote'].includes(e.code)&&!(e.target&&e.target.tagName==='BUTTON'&&e.code==='Space'))e.preventDefault();});
+addEventListener('keydown',e=>{if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(!$('#scr-how').hidden){closeHow();return;}if(!$('#scr-about').hidden){closeAbout();return;}if(!$('#scr-ios').hidden){$('#scr-ios').hidden=true;return;}if(G.scr==='fight'){togglePause();e.preventDefault();return;}}keys[e.code]=true;audioUnlock();if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Slash','Quote'].includes(e.code)&&!(e.target&&e.target.tagName==='BUTTON'&&e.code==='Space')&&!(e.target&&e.target.tagName==='INPUT'))e.preventDefault();});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;for(const k in touch)touch[k]=0;});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -911,6 +939,7 @@ function update(){
   if(pr.kick){backPick();}
  }
  else if(G.scr==='acct'){if(pr.kick)show('title');}
+ else if(G.scr==='rank'){if(pr.kick&&!(document.activeElement&&document.activeElement.tagName==='INPUT'))show('title');}
  else if(G.scr==='vs'){if(--G.vsT<=0||(pr.punch&&G.mode!=='online'))show('fight');}
  else if(G.scr==='fight'){if(G.mode==='online')netTick();else if(!G.paused)updFight();}
  else if(G.scr==='result'){if(pr.punch){SFX.ok();resPrimary();}else if(pr.kick){SFX.sel();resSecondary();}}
@@ -1365,7 +1394,7 @@ function awardUps(win,st){const show=G.mode==='cpu'||G.mode==='arcade';document.
  if(!G.awarded){G.awarded=true;const lv0=lvOf(ACCT.total);
   const base=Math.round(G.st.dmg)*2+(win?150:30)+G.st.perf*200+G.st.maxc*25+(st==='done'?1000:0);G.earned=Math.round(base*LV[lv0].m);
   ACCT.ups+=G.earned;ACCT.total+=G.earned;ACCT.fights++;if(win)ACCT.wins++;ACCT.sumAvg+=avg;ACCT.nAvg++;ACCT.best=Math.max(ACCT.best,G.st.maxc);saveAcct();
-  G.lvUp=lvOf(ACCT.total)>lv0?LV[lvOf(ACCT.total)].n:null;}
+  G.lvUp=lvOf(ACCT.total)>lv0?LV[lvOf(ACCT.total)].n:null;rkSync();}
  $('#rAvg').textContent=gs(avg);$('#rUps').textContent='+'+G.earned+' Ups'+(G.cup?' (usaste '+CUP[G.cup].n+')':'');
  $('#rLv').textContent=G.lvUp?'¡Subiste a '+G.lvUp+'!':LV[lvOf(ACCT.total)].n;}
 function renderCup(){const b=$('#cupBtn'),sb=$('#suitBtn');const hide=TWO()||G.pick===1;b.hidden=hide;
@@ -1390,6 +1419,60 @@ function renderAcct(){const li=lvOf(ACCT.total),L=LV[li],N=LV[li+1];
 $('#acctBtn').addEventListener('click',()=>{SFX.ok();show('acct');});
 $('#acctBack').addEventListener('click',()=>{SFX.sel();show('title');});
 
+
+/* ---------- Ranking: top 10 de Ups ganados (Supabase, tabla ranking + función subir_ups) ---------- */
+let RK={id:'',name:'',pos:0,busy:false};
+try{const o=JSON.parse(localStorage.getItem('malobank_rank')||'null');if(o&&o.id)RK=Object.assign(RK,{id:o.id,name:o.name||''});}catch(e){}
+function rkSave(){try{localStorage.setItem('malobank_rank',JSON.stringify({id:RK.id,name:RK.name}));}catch(e){}}
+function rkUuid(){if(crypto.randomUUID)return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=b[6]&15|64;b[8]=b[8]&63|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);}
+const RK_LOCAL=new URLSearchParams(location.search).get('rank')==='local';
+/* ?rank=local: ranking falso en este navegador, para probar sin Supabase */
+function rkLocalDb(){try{return JSON.parse(localStorage.getItem('malobank_rankdb')||'[]');}catch(e){return [];}}
+async function rkApi(fn,body){
+ if(RK_LOCAL){let db=rkLocalDb();
+  if(fn==='top')return db.sort((a,b)=>b.ups-a.ups).slice(0,10).map(({nombre,ups})=>({nombre,ups}));
+  if(fn==='borrar_ranking'){localStorage.setItem('malobank_rankdb',JSON.stringify(db.filter(r=>r.clave!==body.p_clave)));return null;}
+  const n=body.p_nombre.trim().replace(/\s+/g,' ');if(!/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ_. -]{3,14}$/.test(n))throw new Error('nombre_invalido');
+  if(db.some(r=>r.nombre.toLowerCase()===n.toLowerCase()&&r.clave!==body.p_clave))throw new Error('nombre_ocupado');
+  let r=db.find(r=>r.clave===body.p_clave);if(!r){r={clave:body.p_clave,ups:0};db.push(r);}r.nombre=n;r.ups=Math.max(r.ups,body.p_ups);
+  localStorage.setItem('malobank_rankdb',JSON.stringify(db));return [{puesto:db.filter(x=>x.ups>r.ups).length+1,nombre:n,ups:r.ups}];}
+ const ac=new AbortController(),t=setTimeout(()=>ac.abort(),8000);
+ const h={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'};
+ try{const r=fn==='top'?await fetch(SB_URL+'/rest/v1/ranking?select=nombre,ups&order=ups.desc,actualizado.asc&limit=10',{headers:h,signal:ac.signal})
+   :await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(body),signal:ac.signal});
+  const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null;}catch(e){}
+  if(!r.ok)throw new Error((j&&j.message)||('http '+r.status));return j;}
+ finally{clearTimeout(t);}}
+function rkErr(e){const m=String(e&&e.message||e);
+ if(m.includes('nombre_ocupado'))return 'Ese nombre ya lo usa otro cliente. Probá con otro.';
+ if(m.includes('nombre_invalido'))return 'Usá de 3 a 14 letras, números, espacios, punto, guion o guion bajo.';
+ return 'No pudimos conectar con el ranking. Revisá tu internet y probá de nuevo.';}
+async function rkSend(name){if(!RK.id){RK.id=rkUuid();rkSave();}
+ const res=await rkApi('subir_ups',{p_clave:RK.id,p_nombre:name,p_ups:Math.max(0,Math.round(ACCT.total))});
+ const row=Array.isArray(res)?res[0]:res;RK.name=row&&row.nombre||name;RK.pos=row&&row.puesto||0;rkSave();}
+/* después de cada pelea contra la máquina: actualiza tus Ups en el ranking, sin molestar si falla */
+function rkSync(){if(!RK.id||!RK.name)return;rkSend(RK.name).catch(()=>{});}
+function rkForget(){const id=RK.id;RK={id:'',name:'',pos:0,busy:false};try{localStorage.removeItem('malobank_rank');}catch(e){}if(id)rkApi('borrar_ranking',{p_clave:id}).catch(()=>{});}
+function rkMsg(t,err){const m=$('#rkMsg');m.textContent=t||'';m.className='onmsg'+(err?' err':'');}
+function rkShowForm(on){$('#rkForm').hidden=!on;$('#rkMe').hidden=on||!RK.name;$('#rkAsk').textContent=RK.name?'Elegí tu nuevo nombre de usuario':'Elegí tu nombre de usuario para entrar al ranking';
+ if(on){const i=$('#rkName');i.value=RK.name;setTimeout(()=>i.focus({preventScroll:true}),0);}}
+function rkRender(rows){const ol=$('#rkList');ol.innerHTML='';
+ if(!rows.length){const li=document.createElement('li');li.className='empty';li.textContent='Todavía no hay nadie. ¡Sé el primero!';ol.append(li);}
+ rows.forEach((r,i)=>{const li=document.createElement('li');if(RK.name&&r.nombre.toLowerCase()===RK.name.toLowerCase())li.className='me';
+  const b=document.createElement('b'),n=document.createElement('span'),u=document.createElement('span');b.textContent='#'+(i+1);n.textContent=r.nombre;u.className='u';u.textContent=Number(r.ups).toLocaleString('es-PY');li.append(b,n,u);ol.append(li);});
+ $('#rkMeTxt').textContent=RK.name?'Vos: '+RK.name+(RK.pos?' · puesto #'+RK.pos:'')+' · '+Math.round(ACCT.total).toLocaleString('es-PY')+' Ups':'';}
+async function rkOpen(){rkShowForm(!RK.name);rkMsg('Cargando el ranking...');$('#rkList').innerHTML='';
+ try{if(RK.name)await rkSend(RK.name).catch(()=>{});const rows=await rkApi('top');if(G.scr!=='rank')return;rkRender(rows||[]);rkMsg(RK.name?'':'Para aparecer acá, poné tu nombre de usuario.');}
+ catch(e){if(G.scr==='rank')rkMsg(rkErr(e),true);}}
+$('#rkForm').addEventListener('submit',async e=>{e.preventDefault();if(RK.busy)return;const n=$('#rkName').value.trim().replace(/\s+/g,' ');
+ if(!/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ_. -]{3,14}$/.test(n)){SFX.block();rkMsg(rkErr('nombre_invalido'),true);return;}
+ RK.busy=true;$('#rkSave').disabled=true;rkMsg('Guardando...');
+ try{await rkSend(n);SFX.ok();rkShowForm(false);const rows=await rkApi('top');rkRender(rows||[]);rkMsg('¡Listo! Ya estás en el ranking.');}
+ catch(err){SFX.block();rkMsg(rkErr(err),true);}
+ finally{RK.busy=false;$('#rkSave').disabled=false;}});
+$('#rkEdit').addEventListener('click',()=>{SFX.sel();rkShowForm(true);rkMsg('');});
+$('#rankBtn').addEventListener('click',()=>{SFX.ok();show('rank');});
+$('#rkBack').addEventListener('click',()=>{SFX.sel();show('title');});
 
 /* ---------- PWA: instalación y modo sin internet ---------- */
 let installEvt=null;
@@ -1425,7 +1508,7 @@ $('#aboutBtn').addEventListener('click',e=>{e.stopPropagation();SFX.sel();openAb
 $('#aboutFoot').addEventListener('click',e=>{e.stopPropagation();SFX.sel();openAbout();});
 $('#aboutClose').addEventListener('click',()=>{SFX.sel();closeAbout();});
 $('#wipe').addEventListener('click',()=>{const b=$('#wipe');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='Tocá de nuevo para confirmar';return;}
- try{localStorage.removeItem('malobank');localStorage.removeItem('malobank_acct');localStorage.removeItem('malobank_inst');}catch(e){}
+ rkForget();try{localStorage.removeItem('malobank');localStorage.removeItem('malobank_acct');localStorage.removeItem('malobank_inst');}catch(e){}
  ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null};G.hi=0;G.suit=false;b.dataset.ok='';b.textContent='Progreso borrado';SFX.ok();$('#hiScore').textContent='RÉCORD 000000';});
 /* ---------- menú arcade y demo ---------- */
 function menuItems(){return [...document.querySelectorAll('.mi')].filter(b=>b.offsetParent!==null);}
@@ -1471,8 +1554,8 @@ function renderResult(){const w=G.winner,l=w===P1?P2:P1,st=resState(),on=G.mode=
  setTimeout(()=>{if(!isTouch)$('#again').focus({preventScroll:true});},0);}
 function resPrimary(){if(G.mode==='online'){netAgain();return;}const st=resState();if(st==='next'){G.li++;beginMatch(G.p1i,G.ladder[G.li]);}else if(st==='done')startArcade();else if(st==='retry'){G.score=G.score0;beginMatch(G.p1i,G.p2i);}else{armCoupon();beginMatch(G.p1i,G.p2i);}}
 function resSecondary(){if(G.mode==='online'){netToSelect(true);return;}if(G.mode==='arcade')show('title');else show('select');}
-function show(scr){if(scr==='result'&&G.mode==='demo')scr='title';if(scr==='title'&&G.mode==='demo')G.mode='cpu';G.scr=scr;document.body.dataset.gm=G.mode;G.paused=false;$('#scr-pause').hidden=true;G.prevIn=readP1();for(const n of ['title','select','vs','result','acct','online'])$('#scr-'+n).hidden=n!==scr;
- if(scr==='acct')renderAcct();$('#hud').hidden=scr!=='fight';document.body.dataset.scr=scr;
+function show(scr){if(scr==='result'&&G.mode==='demo')scr='title';if(scr==='title'&&G.mode==='demo')G.mode='cpu';G.scr=scr;document.body.dataset.gm=G.mode;G.paused=false;$('#scr-pause').hidden=true;G.prevIn=readP1();for(const n of ['title','select','vs','result','acct','online','rank'])$('#scr-'+n).hidden=n!==scr;
+ if(scr==='acct')renderAcct();if(scr==='rank')rkOpen();$('#hud').hidden=scr!=='fight';document.body.dataset.scr=scr;
  setSong(scr==='fight'?STAGE_SONG[G.stage][0]:(scr==='vs'||scr==='result'?null:'title'),scr==='fight'?STAGE_SONG[G.stage][1]:0,scr==='fight'?STAGE_SONG[G.stage][2]:0);
  if(scr==='vs')renderVS();
  if(scr==='select'){G.pick=0;G.cur=G.p1i;renderSelect();setTimeout(()=>{const b=document.querySelectorAll('.who')[G.cur];if(b&&!isTouch)b.focus({preventScroll:true});},0);}
