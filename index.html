@@ -1425,6 +1425,10 @@ let RK={id:'',name:'',pos:0,busy:false};
 try{const o=JSON.parse(localStorage.getItem('malobank_rank')||'null');if(o&&o.id)RK=Object.assign(RK,{id:o.id,name:o.name||''});}catch(e){}
 function rkSave(){try{localStorage.setItem('malobank_rank',JSON.stringify({id:RK.id,name:RK.name}));}catch(e){}}
 function rkUuid(){if(crypto.randomUUID)return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=b[6]&15|64;b[8]=b[8]&63|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);}
+/* nombres prohibidos (el control de verdad está en Supabase, tabla nombres_prohibidos) */
+const RK_BAN=['ueno'];
+function rkNorm(n){return n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[013457@$]/g,c=>({'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','@':'a','$':'s'})[c]).replace(/[^a-z]/g,'').replace(/(.)\1+/g,'$1');}
+function rkBanned(n){const v=rkNorm(n).replace(/bueno|sueno|trueno|dueno/g,'-');return RK_BAN.some(b=>v.includes(b));}
 const RK_LOCAL=new URLSearchParams(location.search).get('rank')==='local';
 /* ?rank=local: ranking falso en este navegador, para probar sin Supabase */
 function rkLocalDb(){try{return JSON.parse(localStorage.getItem('malobank_rankdb')||'[]');}catch(e){return [];}}
@@ -1433,6 +1437,7 @@ async function rkApi(fn,body){
   if(fn==='top')return db.sort((a,b)=>b.ups-a.ups).slice(0,10).map(({nombre,ups})=>({nombre,ups}));
   if(fn==='borrar_ranking'){localStorage.setItem('malobank_rankdb',JSON.stringify(db.filter(r=>r.clave!==body.p_clave)));return null;}
   const n=body.p_nombre.trim().replace(/\s+/g,' ');if(!/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ_. -]{3,14}$/.test(n))throw new Error('nombre_invalido');
+  if(rkBanned(n))throw new Error('nombre_prohibido');
   if(db.some(r=>r.nombre.toLowerCase()===n.toLowerCase()&&r.clave!==body.p_clave))throw new Error('nombre_ocupado');
   let r=db.find(r=>r.clave===body.p_clave);if(!r){r={clave:body.p_clave,ups:0};db.push(r);}r.nombre=n;r.ups=Math.max(r.ups,body.p_ups);
   localStorage.setItem('malobank_rankdb',JSON.stringify(db));return [{puesto:db.filter(x=>x.ups>r.ups).length+1,nombre:n,ups:r.ups}];}
@@ -1445,6 +1450,7 @@ async function rkApi(fn,body){
  finally{clearTimeout(t);}}
 function rkErr(e){const m=String(e&&e.message||e);
  if(m.includes('nombre_ocupado'))return 'Ese nombre ya lo usa otro cliente. Probá con otro.';
+ if(m.includes('nombre_prohibido'))return 'Ese nombre no está permitido. Elegí otro apodo.';
  if(m.includes('nombre_invalido'))return 'Usá de 3 a 14 letras, números, espacios, punto, guion o guion bajo.';
  return 'No pudimos conectar con el ranking. Revisá tu internet y probá de nuevo.';}
 async function rkSend(name){if(!RK.id){RK.id=rkUuid();rkSave();}
@@ -1466,6 +1472,7 @@ async function rkOpen(){rkShowForm(!RK.name);rkMsg('Cargando el ranking...');$('
  catch(e){if(G.scr==='rank')rkMsg(rkErr(e),true);}}
 $('#rkForm').addEventListener('submit',async e=>{e.preventDefault();if(RK.busy)return;const n=$('#rkName').value.trim().replace(/\s+/g,' ');
  if(!/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ_. -]{3,14}$/.test(n)){SFX.block();rkMsg(rkErr('nombre_invalido'),true);return;}
+ if(rkBanned(n)){SFX.block();rkMsg(rkErr('nombre_prohibido'),true);return;}
  RK.busy=true;$('#rkSave').disabled=true;rkMsg('Guardando...');
  try{await rkSend(n);SFX.ok();rkShowForm(false);const rows=await rkApi('top');rkRender(rows||[]);rkMsg('¡Listo! Ya estás en el ranking.');}
  catch(err){SFX.block();rkMsg(rkErr(err),true);}
