@@ -924,13 +924,16 @@ function update(){
 /* sprites: se dibujan con coordenadas de esqueleto (pies en y=0) multiplicadas por SS.
    La escala se puede pasar a sprite(); hoy todo usa 1. */
 const OUT='#140c1c';
-let SS=1,SOX=44,SOY=82;
+let SS=1,SOX=44,SOY=82,HK=1,HCX=0,HCY=0;   // HK: escala local de la cabeza alrededor de (HCX,HCY)
+const TX=x=>((x-HCX)*HK+HCX)*SS,TY=y=>((y-HCY)*HK+HCY)*SS;
 const SPR={};
 let g=null;
-function P(x,y,w,h,c){const x0=Math.round(x*SS),y0=Math.round(y*SS),x1=Math.round((x+w)*SS),y1=Math.round((y+h)*SS);g.fillStyle=c;g.fillRect(x0+SOX,y0+SOY,Math.max(1,x1-x0),Math.max(1,y1-y0));}
-function disc(x,y,r,c){x=Math.round(x*SS);y=Math.round(y*SS);r=Math.round(r*SS);g.fillStyle=c;for(let dy=-r;dy<=r;dy++){const dx=Math.floor(Math.sqrt(r*r+r-dy*dy));g.fillRect(x-dx+SOX,y+dy+SOY,dx*2+1,1);}}
+function P(x,y,w,h,c){const x0=Math.round(TX(x)),y0=Math.round(TY(y)),x1=Math.round(TX(x+w)),y1=Math.round(TY(y+h));g.fillStyle=c;g.fillRect(x0+SOX,y0+SOY,Math.max(1,x1-x0),Math.max(1,y1-y0));}
+function disc(x,y,r,c){x=Math.round(TX(x));y=Math.round(TY(y));r=r*SS*HK;const ri=Math.floor(r+.3);g.fillStyle=c;for(let dy=-ri;dy<=ri;dy++){const q=r*r+r-dy*dy;if(q<0)continue;const dx=Math.floor(Math.sqrt(q));g.fillRect(x-dx+SOX,y+dy+SOY,dx*2+1,1);}}
+/* extremidad con forma: grosor que va de r0 a r1 y un bulto de músculo (bíceps, cuádriceps, gemelo) */
+function mlimb(a,b,r0,r1,bul,at,c){const n=Math.max(2,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])*SS*1.5));for(let i=0;i<=n;i++){const t=i/n,m=Math.max(0,1-Math.abs(t-at)/.45);disc(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,r0+(r1-r0)*t+bul*m*m*(3-2*m),c);}}
 function limb(a,b,r,c){const n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])*SS));for(let i=0;i<=n;i++){const t=i/n;disc(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,r,c);}}
-function poly(pts,c){g.fillStyle=c;pts=pts.map(p=>[p[0]*SS,p[1]*SS]);const ys=pts.map(p=>p[1]),y0=Math.ceil(Math.min(...ys)),y1=Math.floor(Math.max(...ys));
+function poly(pts,c){g.fillStyle=c;pts=pts.map(p=>[TX(p[0]),TY(p[1])]);const ys=pts.map(p=>p[1]),y0=Math.ceil(Math.min(...ys)),y1=Math.floor(Math.max(...ys));
  for(let y=y0;y<=y1;y++){let mn=1e9,mx=-1e9;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];
   if((a[1]<=y&&b[1]>=y)||(b[1]<=y&&a[1]>=y)){if(a[1]===b[1]){mn=Math.min(mn,a[0],b[0]);mx=Math.max(mx,a[0],b[0]);}else{const x=a[0]+(y-a[1])/(b[1]-a[1])*(b[0]-a[0]);mn=Math.min(mn,x);mx=Math.max(mx,x);}}}
   if(mx>=mn){const l=Math.round(mn),r=Math.round(mx);g.fillRect(l+SOX,y+SOY,r-l+1,1);}}}
@@ -1007,22 +1010,32 @@ function sprite(c,pose,fr,flash,sc){
  SS=1;SOX=44;SOY=82;SPR[key]=cvs;return cvs;}
 
 function drawSprite(c,p,pose,fr){
+ // proporciones de cuerpo real: cuerpo 8% más largo y cabeza más chica (unas 7 cabezas de alto)
+ {const Y=q=>[q[0],q[1]*1.08];p={...p,hip:Y(p.hip),sh:Y(p.sh),hd:Y(p.hd),bk:p.bk.map(Y),fk:p.fk.map(Y),ba:p.ba.map(Y),fa:p.fa.map(Y)};}
  const id=c.base||c.id,sk=c.skin,sks=shade(sk,.8),L=c.bot,Ls=shade(L),T1=c.top,T2=c.top2,dress=!!c.dress;
  const shortSleeve=id==='jubi',s=p.sh,h=p.hip;
- const leg=(k,f,back)=>{const col=back?Ls:L,shin=dress?(back?sks:sk):col,hp=[h[0]+(back?-2:2),h[1]];limb(hp,k,4,col);limb([k[0]*.7+hp[0]*.3,k[1]*.7+hp[1]*.3],k,4.5,col);limb(k,f,dress?2:3,shin);
-  if(!back){limb([hp[0]+1,hp[1]-1],[k[0]+1,k[1]-1],0,lite(L));limb([k[0]+1,k[1]],[f[0]+1,f[1]-3],0,dress?lite(sk):lite(L));}
-  const sc=back?shade(c.shoe,.7):c.shoe;if(dress){P(f[0]-1,f[1]-3,6,3,sc);P(f[0]-1,f[1]-1,1,1,sc);}else{P(f[0]-3,f[1]-4,9,4,sc);P(f[0]+3,f[1]-3,3,2,sc);P(f[0]-3,f[1]-1,9,1,shade(c.shoe,.5));}};
- const arm=(e,hn,back)=>{const sp=back?[s[0]-2,s[1]+2]:[s[0]+2,s[1]+2];disc(sp[0],sp[1],3.5,back?T2:T1);limb(sp,e,3,back?T2:T1);
-  limb(e,hn,2.5,shortSleeve?(back?sks:sk):(back?T2:T1));if(!back){limb([sp[0],sp[1]-1],[e[0],e[1]-1],0,lite(T1));limb([e[0],e[1]-1],[hn[0]-1,hn[1]-1],0,shortSleeve?lite(sk):lite(T1));}disc(hn[0],hn[1],3,back?sks:sk);P(hn[0],hn[1]-2,2,1,back?sk:'#ffffff60');P(hn[0]-2,hn[1],1,2,shade(sk,.7));};
+ // piernas: muslo grueso que se afina en la rodilla, gemelo marcado y tobillo fino
+ const leg=(k,f,back)=>{const col=back?Ls:L,shin=dress?(back?sks:sk):col,hp=[h[0]+(back?-2:2),h[1]];
+  mlimb(hp,k,4.2,2.6,.9,.3,col);mlimb(k,f,dress?2:2.6,dress?1.3:1.9,dress?.7:.8,.3,shin);
+  if(!back){limb([hp[0]+1.5,hp[1]+1],[k[0]+1,k[1]-1],0,lite(L));limb([k[0]+1,k[1]+1],[f[0]+1,f[1]-4],0,dress?lite(sk):lite(L));P(k[0],k[1],2,1,lite(col));}
+  const sc=back?shade(c.shoe,.7):c.shoe;if(dress){P(f[0]-1,f[1]-3,5,3,sc);P(f[0]+3,f[1]-2,2,2,sc);P(f[0]-1,f[1]-1,1,1,sc);}
+  else{P(f[0]-3,f[1]-3,8,3,sc);P(f[0]+1,f[1]-4,4,1,sc);P(f[0]+5,f[1]-2,1,2,sc);P(f[0]-3,f[1]-1,9,1,shade(c.shoe,.5));P(f[0]+1,f[1]-3,2,1,lite(sc));}};
+ // brazos: hombro redondo (deltoides), bíceps, antebrazo que se afina en la muñeca, puño con nudillos
+ const arm=(e,hn,back)=>{const col=back?T2:T1,sp=back?[s[0]-2,s[1]+2]:[s[0]+3,s[1]+2],fc=shortSleeve?(back?sks:sk):col;
+  disc(sp[0],sp[1],3.4,col);mlimb(sp,e,2.9,2,.7,.4,col);mlimb(e,hn,2.2,1.5,.6,.25,fc);
+  if(shortSleeve)mlimb(sp,[sp[0]+(e[0]-sp[0])*.55,sp[1]+(e[1]-sp[1])*.55],3,2.6,0,0,col);
+  if(!back){limb([sp[0],sp[1]-2],[e[0],e[1]-1.5],0,lite(T1));limb([e[0],e[1]-1],[hn[0]-1,hn[1]-1],0,shortSleeve?lite(sk):lite(T1));}
+  const hc=back?sks:sk;disc(hn[0],hn[1],2.6,hc);P(hn[0]-1,hn[1]-2,3,1,lite(hc));P(hn[0]+1,hn[1]-1,1,3,shade(hc,.78));P(hn[0]-2,hn[1]+1,2,1,shade(hc,.75));};
  // pierna de atrás
  leg(p.bk[0],p.bk[1],true);
- if(!dress)leg(p.fk[0],p.fk[1],false);else leg(p.fk[0],p.fk[1],false);
- // torso
- poly([[s[0]-9,s[1]+2],[s[0]-6,s[1]-1],[s[0]+6,s[1]-1],[s[0]+9,s[1]+2],[s[0]+8,s[1]+8],[h[0]+6,h[1]],[h[0]-6,h[1]],[s[0]-8,s[1]+8]],T1);
- poly([[s[0]-9,s[1]+2],[s[0]-6,s[1]-1],[s[0]-2,s[1]-1],[h[0]-2,h[1]],[h[0]-6,h[1]],[s[0]-8,s[1]+8]],T2);
- limb([s[0]+5,s[1]],[h[0]+4,h[1]-1],0,lite(T1));
+ leg(p.fk[0],p.fk[1],false);
+ // torso con forma: trapecio, hombros anchos, pecho, cintura más angosta y cadera
+ const TP=(t,dx)=>[s[0]+(h[0]-s[0])*t+dx,s[1]+(h[1]-s[1])*t];
+ poly([TP(-.08,-3),TP(-.08,3),TP(0,8),TP(.12,9),TP(.32,8.5),TP(.62,6),TP(.8,5.6),TP(1,6.6),TP(1.08,6),TP(1.08,-6),TP(1,-6.6),TP(.8,-5.4),TP(.62,-5.8),TP(.32,-7.5),TP(.12,-8.5),TP(0,-8)],T1);
+ poly([TP(-.08,-3),TP(-.05,-1),TP(.4,-1.5),TP(1.08,-2),TP(1.08,-6),TP(1,-6.6),TP(.8,-5.4),TP(.62,-5.8),TP(.32,-7.5),TP(.12,-8.5),TP(0,-8)],T2);
+ limb(TP(.12,7),TP(.55,5),0,lite(T1));limb(TP(.42,1),TP(.42,6),0,shade(T1,.82));
  if(dress)poly([[h[0]-6,h[1]-3],[h[0]+6,h[1]-3],[h[0]+(pose==='kick'&&fr?11:8),h[1]+12],[h[0]-8,h[1]+12]],L);
- else{P(h[0]-6,h[1]-2,13,3,shade(L,.6));P(h[0]-1,h[1]-2,3,3,'#c9a227');}
+ else{poly([[h[0]-6.5,h[1]-1],[h[0]+6.5,h[1]-1],[h[0]+5,h[1]+4],[h[0]-5,h[1]+4]],L);P(h[0]-6,h[1]-2,13,3,shade(L,.6));P(h[0]-1,h[1]-2,3,3,'#c9a227');}
  // detalles del pecho
  if(id==='uni'){poly([[s[0]-2,s[1]],[s[0]+3,s[1]],[s[0]+0.5,s[1]+7]],'#ffffff');P(s[0],s[1]+1,2,9,'#ffd23f');P(s[0]+3,s[1]+9,1,1,'#ffd23f');}
  if(id==='reg'){poly([[s[0]-2,s[1]],[s[0]+3,s[1]],[s[0]+0.5,s[1]+7]],'#ffffff');P(s[0],s[1]+1,2,10,'#8b1a1a');}
@@ -1043,8 +1056,8 @@ function drawSprite(c,p,pose,fr){
  if(id==='chip'&&pose!=='hurt'){const b=p.ba[1];P(b[0]-6,b[1]+1,11,6,'#a8742a');P(b[0]-6,b[1]+1,11,1,'#d09a48');for(let k=0;k<3;k++)P(b[0]-5+k*4,b[1]-1,3,2,'#f0c860');limb([b[0]-5,b[1]+1],[b[0],b[1]-5],0,'#8a5a20');limb([b[0],b[1]-5],[b[0]+4,b[1]+1],0,'#8a5a20');}
  if(id==='mani'&&pose!=='hurt'&&pose!=='sweep'){const b=p.ba[1];P(b[0],b[1]-22,1,23,'#8a5a30');P(b[0]-7,b[1]-32,15,11,'#f2ecd8');P(b[0]-7,b[1]-32,15,1,'#ffffff');P(b[0]-5,b[1]-29,11,2,'#1f3a10');P(b[0]-5,b[1]-25,8,2,'#1f3a10');}
  // cuello y cabeza
- P(p.hd[0]-2,p.hd[1]+4,4,4,sks);
- head(c,p.hd,pose==='hurt'?'hurt':(pose==='stand'&&fr?'sleep':'n'));
+ poly([[p.hd[0]-3,p.hd[1]+3],[p.hd[0]+2,p.hd[1]+3],[p.hd[0]+3,p.hd[1]+8],[p.hd[0]-4,p.hd[1]+8]],sks);
+ HK=.86;HCX=p.hd[0];HCY=p.hd[1]+5;head(c,p.hd,pose==='hurt'?'hurt':(pose==='stand'&&fr?'sleep':'n'));HK=1;HCX=HCY=0;
  // brazo de adelante
  arm(p.fa[0],p.fa[1],false);
  const fh=p.fa[1],bh=p.ba[1];
