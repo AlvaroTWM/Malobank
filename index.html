@@ -144,6 +144,13 @@ dt{color:var(--muted)}dd{margin:0;text-align:right;font-weight:500;font-variant-
 .go-col{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 .opts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .how{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+#scr-how{z-index:70}
+.howtabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.howtabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 11px;border:2px solid var(--line,#2b5c47);background:transparent;color:inherit;border-radius:0;cursor:pointer;min-height:38px}
+.howtabs button[aria-selected="true"]{background:var(--yel);color:var(--ink);border-color:var(--ink)}
+.howtabs button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.howlead{margin:0 0 10px;font-size:15px;line-height:1.45}
+.howpane[hidden]{display:none}
 .how h3{margin:0 0 4px;font-size:15px}
 .how p{margin:0;font-size:14px;line-height:1.45;color:var(--muted)}
 .keys{width:100%;border-collapse:collapse;font-size:13px}
@@ -483,7 +490,7 @@ body[data-scr=fight] #fs{display:flex}
 .cab-b{font-family:'Press Start 2P',monospace;font-size:9px;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3a8,var(--yel) 55%,#c4931a);color:var(--ink);border:4px solid var(--ink);box-shadow:0 5px 0 #000;cursor:pointer;animation:cabp 1.2s ease-in-out infinite}
 .cab-b:active{transform:translateY(4px);box-shadow:0 1px 0 #000}
 @keyframes cabp{50%{box-shadow:0 5px 0 #000,0 0 18px rgba(255,210,63,.8)}}
-.cab-b2{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9fd0ff,var(--blue) 55%,#2a6aa8);border:4px solid var(--ink);box-shadow:0 4px 0 #000}
+.cab-b2{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--ink);cursor:pointer;padding:0;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9fd0ff,var(--blue) 55%,#2a6aa8);border:4px solid var(--ink);box-shadow:0 4px 0 #000}
 .cab-coin{flex:0 0 auto;margin:0 -10px 12px;background:#2a0f22;border:4px solid var(--ink);border-top:0;padding:8px;display:flex;align-items:center;justify-content:center;gap:12px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--yel);animation:hbl 1.4s steps(1) infinite}
 .cab-slot{display:inline-block;width:8px;height:22px;background:#000;border:3px solid #b8901a;box-shadow:0 0 8px rgba(255,77,90,.7)}
 .cab-screen .hplay{display:none}
@@ -635,7 +642,7 @@ body[data-scr=fight] #fs{display:flex}
   </div></div>
   <div class="cab-panel">
    <div class="cab-joy"><button class="harrow" id="hubPrev" type="button" aria-label="Juego anterior">◄</button><span class="cab-stick" id="hubStick" aria-hidden="true"><i></i></span><button class="harrow" id="hubNext" type="button" aria-label="Juego siguiente">►</button></div>
-   <div class="cab-btns"><button class="cab-b" id="hubA" type="button" aria-label="Jugar el juego elegido">JUGAR</button><span class="cab-b2" aria-hidden="true"></span></div>
+   <div class="cab-btns"><button class="cab-b" id="hubA" type="button" aria-label="Jugar el juego elegido">JUGAR</button><button class="cab-b2" id="hubHelp" type="button" aria-label="Cómo jugar este juego">?</button></div>
   </div>
   <div class="cab-coin" aria-hidden="true"><span class="cab-slot"></span>INSERTE UPS<span class="cab-slot"></span></div>
  </div>
@@ -684,6 +691,11 @@ body[data-scr=fight] #fs{display:flex}
 <section class="sheet" id="scr-how" hidden role="dialog" aria-modal="true" aria-labelledby="howTt">
  <div class="panel wide">
   <h2 id="howTt">Cómo jugar</h2>
+  <div class="howtabs" role="tablist" aria-label="Elegí el juego">
+   <button role="tab" data-tab="pelea">Pelea</button><button role="tab" data-tab="pedido">Pedido Caliente</button><button role="tab" data-tab="caja">Caja Justa</button><button role="tab" data-tab="viaje">Viaje Pya'e</button><button role="tab" data-tab="canillita">Canillita</button><button role="tab" data-tab="premios">Premios</button>
+  </div>
+  <div class="howpane" data-pane="pelea">
+  <p class="howlead">El juego principal: peleas de a uno contra la máquina, contra un amigo en el mismo aparato u online con código.</p>
   <div class="how">
    <div><h3>Objetivo</h3><p>Dejá el saldo del rival en cero. Gana el primero en llevarse 2 rondas de 60 segundos.</p></div>
    <div><h3>Defenderte</h3><p>Mantené la dirección contraria al rival para bloquear. Recibís solo una parte del daño.</p></div>
@@ -712,6 +724,69 @@ body[data-scr=fight] #fs{display:flex}
    <tr><td>Súper</td><td>T</td><td>Shift derecho (o 0)</td></tr>
   </tbody></table>
   <p class="hint">También podés conectar mandos: A golpe, B patada, X especial, Y súper, Start pausa. El primer mando es del jugador 1.</p></div>
+  </div>
+  <div class="howpane" data-pane="pedido" hidden>
+   <p class="howlead"><b>Pedido Caliente</b> (delivery Hambris): llevá los pedidos antes de que se enfríen. La partida termina cuando la temperatura llega a cero.</p>
+   <div class="how">
+    <div><h3>Saltar</h3><p>Tocá la pantalla, o usá flecha arriba, espacio o J. Saltá perros, baches y conos: cada choque enfría el pedido.</p></div>
+    <div><h3>En el local</h3><p>Aparece lo que pidió el cliente y tres bolsas. Elegí la correcta con ◄ ▲ ► o tocándola. Si se te pasa el tiempo, sale una al azar.</p></div>
+    <div><h3>Entregar</h3><p>En la casa con la flecha amarilla se entrega solo. Bolsa correcta: puntos y propina. Bolsa equivocada: casi nada.</p></div>
+    <div><h3>Propina</h3><p>Cuanto más caliente llegás, más propina. Arriba de 70° la propina es doble.</p></div>
+    <div><h3>¡Recién salido!</h3><p>Tres entregas correctas seguidas prenden el modo x2: todos los puntos valen el doble por unos segundos.</p></div>
+    <div><h3>Billetes y cupones</h3><p>Los billetes suman. Los cupones casi nunca andan y te frenan, pero 1 de cada 5 da turbo.</p></div>
+    <div><h3>Ojo</h3><p>A veces la tarjeta del cliente sale RECHAZADA y perdés temperatura volviendo.</p></div>
+    <div><h3>Estrellas</h3><p>★ 700 · ★★ 1.500 · ★★★ 2.600 puntos.</p></div>
+   </div>
+  </div>
+  <div class="howpane" data-pane="caja" hidden>
+   <p class="howlead"><b>Caja Justa</b> (courier U-Bloq): apilá cajas lo más alto que puedas sin que se caiga la torre.</p>
+   <div class="how">
+    <div><h3>Soltar</h3><p>La grúa balancea la caja. Tocá la pantalla, o usá Enter, espacio o J para soltarla.</p></div>
+    <div><h3>¡Justa!</h3><p>Si cae centrada arriba de la anterior, es perfecta: suma combo y la torre se balancea menos.</p></div>
+    <div><h3>Balanceo</h3><p>Cada caja corrida hace que la torre se mueva más. Mirá la barra BALANCEO: si se llena, se cae todo.</p></div>
+    <div><h3>Cajas especiales</h3><p>La gris RETENIDO pesa más y desbalancea. Después de la caja 16 empiezan a caer expedientes.</p></div>
+    <div><h3>Vidas</h3><p>Tenés 3 cajas de repuesto (arriba). Si se te caen 3 al piso, termina la partida.</p></div>
+    <div><h3>Hitos de altura</h3><p>A las 8, 14, 22 y 32 cajas pasás el techo del banco, las nubes, el avión y la luna. Cada hito da puntos extra.</p></div>
+    <div><h3>Truco</h3><p>Soltá cuando la caja pasa por el centro de la torre, no por el centro de la pantalla: la torre también se mueve.</p></div>
+    <div><h3>Estrellas</h3><p>★ 250 · ★★ 700 · ★★★ 1.400 puntos.</p></div>
+   </div>
+  </div>
+  <div class="howpane" data-pane="viaje" hidden>
+   <p class="howlead"><b>Viaje Pya'e</b> (NoMuv): manejá por las calles de Asunción esquivando el tráfico. Cuanto más lejos llegás, más puntos.</p>
+   <div class="how">
+    <div><h3>Cambiar de carril</h3><p>Flechas izquierda y derecha (o A y D). En el celular, tocá el lado de la pantalla hacia donde querés ir.</p></div>
+    <div><h3>Esquivar</h3><p>Colectivos, 4x4, autos y motos. Las motos cambian de carril sin avisar. 3 choques y se termina el viaje.</p></div>
+    <div><h3>¡Pya'e!</h3><p>Pasar pegado a un auto sin chocarlo suma un billete extra. Arriesgar paga.</p></div>
+    <div><h3>Billetes</h3><p>Los verdes suman. Los grises de PAGO PENDIENTE no suman nada.</p></div>
+    <div><h3>Raudal</h3><p>Las manchas marrones de agua te frenan a la mitad un ratito.</p></div>
+    <div><h3>Rutas</h3><p>La calle cambia mientras avanzás: Mcal. López de mañana, Eusebio Ayala, la Costanera de noche y el Centro con lluvia. Cada vez más rápido.</p></div>
+    <div><h3>Estrellas</h3><p>★ 500 · ★★ 1.200 · ★★★ 2.400 puntos.</p></div>
+   </div>
+  </div>
+  <div class="howpane" data-pane="canillita" hidden>
+   <p class="howlead"><b>Canillita</b> (diario La Tribulación): repartí «TODO ESTÁ BIEN» casa por casa hasta llegar a la torre del banco.</p>
+   <div class="how">
+    <div><h3>Tirar el diario</h3><p>Tocá la mitad derecha de la pantalla, o usá J o L. El diario sale en arco hacia adelante.</p></div>
+    <div><h3>Saltar</h3><p>Tocá la mitad izquierda, o usá flecha arriba. Saltá los pozos: si caés en uno, se te caen 3 diarios.</p></div>
+    <div><h3>Dónde apuntar</h3><p>Al felpudo rojo con la flecha amarilla: +50. Si le pegás a una ventana, la rompés y perdés puntos.</p></div>
+    <div><h3>La manifestación</h3><p>Si le pegás a un manifestante, da vuelta el diario y lo usa de cartel: la protesta crece. Al final, cada manifestante suma un poco.</p></div>
+    <div><h3>Diarios</h3><p>Empezás con 30. La partida termina al llegar a la torre o cuando te quedás sin diarios.</p></div>
+    <div><h3>Truco</h3><p>Tirá un poco antes de pasar por la casa: el diario tarda en caer y vos seguís avanzando.</p></div>
+    <div><h3>Estrellas</h3><p>★ 400 · ★★ 900 · ★★★ 1.500 puntos.</p></div>
+   </div>
+  </div>
+  <div class="howpane" data-pane="premios" hidden>
+   <p class="howlead">Todo lo que ganás jugando, y por qué conviene volver mañana.</p>
+   <div class="how">
+    <div><h3>Ups</h3><p>Cada pelea contra la máquina y cada mini-juego te da Ups (hasta 400 por partida de mini-juego). Con Ups subís de nivel y canjeás cupones en Mi cuenta Malo.</p></div>
+    <div><h3>Estrellas</h3><p>Cada mini-juego da de 0 a 3 estrellas según el puntaje. Sacá 3 estrellas en cualquiera y desbloqueás el traje Pilcha Bonus para la pelea.</p></div>
+    <div><h3>Trajes</h3><p>Se ganan jugando: Black (nivel Black), Dorado (10 victorias), Billete (terminar el Arcade), Pijama En Análisis (5 seguidas), Albirroja (25 victorias), Unicornio (nivel Unicornio). Se eligen en Mi cuenta Malo o en la selección de personaje.</p></div>
+    <div><h3>Desafío del día</h3><p>Antes de empezar un mini-juego elegí DESAFÍO DEL DÍA: el recorrido arranca igual para todos ese día. Ideal para competir con amigos.</p></div>
+    <div><h3>Racha</h3><p>Jugá un mini-juego varios días seguidos: a los 3 días ganás 50 Ups extra y a los 7 días, 150.</p></div>
+    <div><h3>Comprobante</h3><p>Al terminar, tocá COMPARTIR para mandar una imagen con tu puntaje por WhatsApp o Instagram.</p></div>
+    <div><h3>Récord</h3><p>Si te faltó poco, el comprobante te dice cuántos puntos te faltaron para tu récord. Una más y dejás.</p></div>
+   </div>
+  </div>
   <button class="btn" id="howClose">Entendido</button>
  </div>
 </section>
@@ -1725,8 +1800,9 @@ function hubStick(d){const k=$('#hubStick');if(!k)return;k.className='cab-stick 
 $('#hubPrev').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubStick('l');hubGo(hubCur-1);});
 $('#hubNext').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubStick('r');hubGo(hubCur+1);});
 $('#hubA').addEventListener('click',()=>{audioUnlock();hubTouch();hubPlay(hubCur);});
+$('#hubHelp').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();const id=HUB[hubCur].id;openHow(id==='malobank'?'pelea':id);});
 $('#hubBtn').addEventListener('click',e=>{e.stopPropagation();SFX.ok();if(G.scr==='title'){closeMenu();openHub();}});
-addEventListener('keydown',e=>{if(!hubOpen()||e.repeat)return;const k=e.code;
+addEventListener('keydown',e=>{if(!hubOpen()||e.repeat||!$('#scr-how').hidden)return;const k=e.code;
  if(k==='ArrowLeft'||k==='KeyA'){hubTouch();SFX.sel();hubStick('l');hubGo(hubCur-1);}else if(k==='ArrowRight'||k==='KeyD'){hubTouch();SFX.sel();hubStick('r');hubGo(hubCur+1);}
  else if((k==='Enter'||k==='Space'||k==='KeyJ')&&!(e.target&&e.target.tagName==='BUTTON')){audioUnlock();hubTouch();hubPlay(hubCur);}else return;e.preventDefault();e.stopPropagation();},true);
 let hubSx=null;$('#hubStage').addEventListener('pointerdown',e=>hubSx=e.clientX);$('#hubStage').addEventListener('pointerup',e=>{if(hubSx===null)return;const dx=e.clientX-hubSx;hubSx=null;if(Math.abs(dx)>40){hubTouch();SFX.sel();hubGo(hubCur+(dx<0?1:-1));}});
@@ -1750,7 +1826,7 @@ function mBirds(g,y0){if(!g.birds)g.birds=[];if(MRAND()<.006&&g.birds.length<4)f
  for(const b of g.birds){b.x-=b.v;b.y+=Math.sin((G.t+b.p*20)/12)*.2;mAnim('pajaro',b.x,b.y,(G.t>>2)+b.p,1,true);}g.birds=g.birds.filter(b=>b.x>-20);}
 let MG=null;const MPTR={tap:null};
 cv.addEventListener('pointerdown',e=>{if(G.scr!=='mini')return;const r=cv.getBoundingClientRect();MPTR.tap={x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};});
-addEventListener('keydown',e=>{if(G.scr==='mini'&&e.code==='Escape'&&!e.repeat){exitMini();e.preventDefault();}});
+addEventListener('keydown',e=>{if(G.scr==='mini'&&e.code==='Escape'&&!e.repeat&&!closeHow.just){exitMini();e.preventDefault();}});
 function miniRec(){try{return JSON.parse(localStorage.getItem('malobank_mini')||'{}')||{};}catch(e){return {};}}
 function miniSaveRec(id,v){const r=miniRec();if(r[id]>=v)return false;r[id]=v;try{localStorage.setItem('malobank_mini',JSON.stringify(r));}catch(e){}return true;}
 const mR=(a,b)=>a+Math.random()*(b-a),mI=(a,b)=>Math.floor(mR(a,b+1)),mP=a=>a[Math.random()*a.length|0];
@@ -2000,7 +2076,8 @@ function endMini(){const g=MG;if(!g||g.ph==='end')return;miniRngOff();g.ph='end'
  g.newSuit=!hadSuit&&g.stars>=3;g.racha=miniRacha();g.ups+=g.racha.bonus;ACCT.ups+=g.ups;ACCT.total+=g.ups;saveAcct();
  g.rec=miniSaveRec(g.id,g.score);g.best=miniRec()[g.id]||g.score;if(g.dia){g.diaRec=miniDiaSave(g.id,g.score);g.diaBest=miniDia()[g.id]||g.score;}jingle(g.score>0);}
 function exitMini(){miniRngOff();MG=null;G.mode='cpu';show('title');openHub();}
-function updMini(pr){const g=MG;if(!g)return;g.t++;const tap=MPTR.tap;MPTR.tap=null;
+addEventListener('keydown',e=>{if(e.code==='KeyH'&&!e.repeat&&G.scr==='mini'&&MG&&MG.ph==='intro'&&$('#scr-how').hidden){openHow(MG.id);e.preventDefault();}});
+function updMini(pr){const g=MG;if(!g)return;g.t++;const tap=MPTR.tap;MPTR.tap=null;if(!$('#scr-how').hidden&&g.ph!=='play')return;
  if(g.def===CAJA&&g.combo>(g.bestCombo||0))g.bestCombo=g.combo;
  if(g.ph==='intro'){if(pr.left||pr.right){g.dia=!g.dia;startMini.dia=g.dia;SFX.sel();return;}
   if(tap&&tap.y>124&&tap.y<160){g.dia=tap.x>=W/2;startMini.dia=g.dia;SFX.sel();return;}
@@ -2014,7 +2091,7 @@ function drawMini(){const g=MG;if(!g)return;const d=g.def;d.draw(g);
   d.help.forEach((l,i)=>T(l,W/2,82+i*12,MC.cream,8,'center'));
   const md=[['NORMAL',!g.dia],['DESAFÍO DEL DÍA',g.dia]];md.forEach(([t,on],i)=>{const bx=W/2-124+i*128;R(bx,132,120,22,on?MC.yel:'rgba(255,255,255,.12)');PX(t,bx+60,146,on?MC.ink:MC.cream,6,'center',false);});
   const db=miniDia()[g.id];PX(g.dia?('MISMO RECORRIDO PARA TODOS HOY'+(db?' · TU MEJOR: '+db:'')):('RÉCORD: '+(miniRec()[g.id]||0)+'   '+'★'.repeat(miniStarRec()[g.id]||0)),W/2,166,'#9fc3d8',5,'center');
-  PX(isTouch?'TOCÁ PARA EMPEZAR':'ENTER PARA EMPEZAR · FLECHAS: MODO',W/2,184,(G.t>>4)%2?MC.yel:MC.cream,7,'center');if(!isTouch)PX('K: VOLVER · ESC: SALIR',W/2,202,'#9fc3d8',5,'center');}
+  PX(isTouch?'TOCÁ PARA EMPEZAR':'ENTER PARA EMPEZAR · FLECHAS: MODO',W/2,184,(G.t>>4)%2?MC.yel:MC.cream,7,'center');if(!isTouch)PX('K: VOLVER · ESC: SALIR · H: GUÍA',W/2,202,'#9fc3d8',5,'center');}
  if(g.ph==='end'){const a=Math.min(1,g.t/20);R(0,0,W,H,'rgba(13,43,32,'+(.75*a)+')');if(g.t<12)return;
   const pw=236,px=W/2-pw/2,py=6;R(px-2,py-2,pw+4,206,MC.ink);R(px,py,pw,202,'#f7f3ea');
   PX('COMPROBANTE',W/2,py+16,MC.ink,8,'center',false);PX(d.name+' · '+d.brand,W/2,py+30,'#7a6e64',5,'center',false);R(px+10,py+36,pw-20,1,'#bdb7aa');
@@ -2112,8 +2189,10 @@ function setPaused(v){if(G.scr!=='fight'||G.mode==='demo'||G.mode==='online')v=f
  if(v){$('#pzSub').textContent=P1.ch.nm+' contra '+P2.ch.nm+', ronda '+G.round+'. Dificultad '+DIFF_NM[G.diff].toLowerCase()+'.';renderOpts();setTimeout(()=>$('#resume').focus({preventScroll:true}),0);}
  else{G.prevIn=readP1();if(P1){P1.prev=readP1();}}}
 function togglePause(){if(G.mode==='online'){releaseInputs();if(confirm('¿Salir de la partida online? Tu rival gana por abandono.'))netLeave();return;}setPaused(!G.paused);SFX.sel();}
-function openHow(){$('#scr-how').hidden=false;setTimeout(()=>$('#howClose').focus({preventScroll:true}),0);}
-function closeHow(){$('#scr-how').hidden=true;if(G.paused)$('#resume').focus({preventScroll:true});}
+function howTab(t){if(!document.querySelector('.howpane[data-pane="'+t+'"]'))t='pelea';document.querySelectorAll('.howtabs button').forEach(b=>{const on=b.dataset.tab===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;});document.querySelectorAll('.howpane').forEach(p=>p.hidden=p.dataset.pane!==t);const pn=document.querySelector('#scr-how .panel');if(pn)pn.scrollTop=0;$('#scr-how').scrollTop=0;}
+document.querySelectorAll('.howtabs button').forEach(b=>b.addEventListener('click',()=>{SFX.sel();howTab(b.dataset.tab);}));
+function openHow(t){howTab(typeof t==='string'?t:'pelea');$('#scr-how').hidden=false;setTimeout(()=>{const b=document.querySelector('.howtabs button[aria-selected="true"]');(b||$('#howClose')).focus({preventScroll:true});},0);}
+function closeHow(){$('#scr-how').hidden=true;closeHow.just=true;setTimeout(()=>closeHow.just=false,0);if(G.paused)$('#resume').focus({preventScroll:true});}
 $('#pauseBtn').addEventListener('click',()=>{audioUnlock();togglePause();});
 $('#resume').addEventListener('click',()=>{SFX.ok();setPaused(false);});
 $('#restart').addEventListener('click',()=>{SFX.ok();setPaused(false);if(G.mode==='arcade')G.score=G.score0;beginMatch(G.p1i,G.p2i,true);});
