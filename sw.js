@@ -1,5 +1,5 @@
 /* Malo Bank: service worker para jugar sin internet */
-const VERSION = 'malobank-v11';
+const VERSION = 'malobank-v15';
 const CORE = ['/', '/index.html', '/manifest.webmanifest', '/favicon-v2.png', '/icon-192-v2.png', '/icon-512-v2.png', '/apple-touch-icon-v2.png', '/og.png'];
 
 self.addEventListener('install', e => {
@@ -24,8 +24,12 @@ self.addEventListener('fetch', e => {
   // La página: primero la red (para recibir versiones nuevas), si no hay internet, la copia guardada
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put('/index.html', copy)); return r; })
-        .catch(() => caches.match('/index.html'))
+      fetch(req).then(r => {
+        // solo la página del juego se guarda como index; otras páginas (privacidad) se guardan aparte
+        const home = url.pathname === '/' || url.pathname === '/index.html';
+        if (r.ok) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(home ? '/index.html' : req, copy)); }
+        return r;
+      }).catch(() => caches.match(req).then(hit => hit || caches.match('/index.html')))
     );
     return;
   }
