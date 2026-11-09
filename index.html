@@ -338,6 +338,10 @@ body.crt #crt{display:block}
 .cup .pr{font:9px 'Press Start 2P';color:var(--yel);align-self:center;text-align:right}
 .cup .btn{grid-column:2;grid-row:2 / span 2;font-size:9px;padding:8px 10px;align-self:center}
 .cup.lock{opacity:.5}.cup .own{font-size:12px;color:var(--lime)}
+.wardrobe{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.suit{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:3px solid #000;background:#0f3024;color:var(--cream);font:inherit;cursor:pointer;text-align:center}
+.suit canvas{width:60px;height:80px;image-rendering:pixelated}.suit b{font-size:12px}.suit span{font-size:10px;color:#b9dccb;line-height:1.2}
+.suit.on{border-color:var(--yel);box-shadow:0 0 0 2px #000 inset}.suit.lock{opacity:.75;cursor:default}
 .fine2{margin:4px 0 0;font-size:12px;color:#8fc7ad}
 .loy[hidden],#cupBtn[hidden],#suitBtn[hidden]{display:none!important}
 #cupBtn,#suitBtn{max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -383,6 +387,9 @@ body.touch[data-scr=fight] #pad{display:flex}
 .b.on{background:rgba(255,255,255,.38);transform:scale(.94)}
 #bup{grid-column:2;grid-row:1}#bl{grid-column:1;grid-row:2}#br{grid-column:3;grid-row:2}#bd{grid-column:2;grid-row:3}
 #bsu{border-color:rgba(198,242,122,.45);color:rgba(255,255,255,.55)}
+#priv{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;width:min(560px,calc(100% - 24px));display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;padding:12px 14px;background:var(--deep);border:3px solid #000;box-shadow:0 0 0 2px var(--lime),0 8px 24px rgba(0,0,0,.5);color:var(--cream);font:13px/1.35 'Pixelify Sans',system-ui,sans-serif}
+#priv[hidden]{display:none}#priv p{margin:0}#priv a{color:var(--yel)}#priv .pb{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}#priv button{font:9px 'Press Start 2P',monospace;padding:9px 10px;border:3px solid #000;cursor:pointer}#privOk{background:var(--yel);color:#000}#privMin{background:transparent;color:var(--cream);border-color:var(--cream)!important}
+@media (max-width:520px){#priv{grid-template-columns:1fr}#priv .pb{justify-content:stretch}#priv button{flex:1}}
 #bsu.ready{border-color:var(--lime);color:var(--lime);background:rgba(198,242,122,.2);animation:pulse .6s infinite alternate}
 @media (orientation:landscape) and (max-height:520px){
  #dir{grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:3px}
@@ -394,7 +401,6 @@ body.touch[data-scr=fight] #pad{display:flex}
 body[data-scr=fight] #fs{display:flex}
 </style>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
-<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body data-scr="title">
 <div id="wrap"><div id="stage"><canvas id="c"></canvas>
@@ -461,7 +467,7 @@ body[data-scr=fight] #fs{display:flex}
     <div class="ups"><b id="aUps"></b><span>Ups disponibles</span></div>
     <dl class="astats"><dt>Peleas</dt><dd id="aF"></dd><dt>Ganadas</dt><dd id="aW"></dd><dt>Saldo promedio</dt><dd id="aAvg"></dd><dt>Mejor combo</dt><dd id="aBest"></dd><dt>Beneficio del nivel</dt><dd id="aPerk"></dd></dl>
    </div>
-   <div class="shop"><h3>Cupones</h3><div id="shop"></div><p class="fine2">Los Ups no vencen. Por ahora. Reintegros sujetos a aprobación del Regulador Ape'a.</p></div>
+   <div class="shop"><h3>Trajes</h3><div id="wardrobe" class="wardrobe"></div><h3>Cupones</h3><div id="shop"></div><p class="fine2">Los Ups no vencen. Por ahora. Reintegros sujetos a aprobación del Regulador Ape'a.</p><p class="fine2"><a href="/privacidad" style="color:var(--yel)">Privacidad y cookies</a> · <a href="#" id="privAgain" style="color:var(--yel)">Cambiar mi elección</a></p></div>
   </div>
  </div>
 </section>
@@ -548,7 +554,7 @@ body[data-scr=fight] #fs{display:flex}
    <h3>Sin fines de lucro</h3>
    <p>No vende nada, no tiene publicidad y no pide donaciones.</p>
    <h3>Privacidad</h3>
-   <p>No pedimos ni guardamos datos personales. Tu progreso (Ups, nivel, cupones, récord y opciones) queda guardado solo en este navegador. Podés borrarlo cuando quieras. Para saber cuánta gente juega contamos visitas de forma anónima con Vercel Web Analytics, sin cookies ni datos personales.</p>
+   <p>No pedimos ni guardamos datos personales. Tu progreso (Ups, nivel, cupones, récord y opciones) queda guardado solo en este navegador. Podés borrarlo cuando quieras. Si aceptás las estadísticas, contamos visitas de forma anónima con Vercel Web Analytics, sin cookies ni datos personales. <a href="/privacidad" style="color:var(--yel)">Política de privacidad completa</a>.</p>
    <button class="btn ghost" id="wipe">Borrar mi progreso</button>
    <h3>Modo online</h3>
    <p>Para encontrarse con el código usamos Supabase Realtime: solo pasa el código de la sala y los datos técnicos para conectarse, y no se guarda nada. Después los dos dispositivos se conectan directo entre sí (WebRTC) y por eso cada uno ve la dirección IP del otro. Durante la pelea solo se mandan los botones que tocás.</p>
@@ -859,7 +865,7 @@ function ai(f,o){
 function startMatch(pi,ci){if(ci===undefined){do{ci=Math.random()*CH.length|0;}while(ci===pi);}beginMatch(pi,ci,true);}
 function beginMatch(pi,ci,skipVs){G.p1i=pi;G.p2i=ci;G.st={dmg:0,maxc:0,perf:0,hps:[]};G.segUsed=false;G.awarded=false;G.paused=false;const pzs=document.getElementById('scr-pause');if(pzs)pzs.hidden=true;saveOpts();
  if(G.mode!=='online')RNG=Math.random;
- P1=mkF((G.suit&&!TWO()&&G.mode!=='demo')?CHB[pi]:CH[pi],W/2-82,1,false);P2=mkF(CH[ci],W/2+82,-1,!TWO());G.stage=rnd()*STAGES.length|0;G.round=1;G.score0=G.score;startRound();
+ P1=mkF((!TWO()&&G.mode!=='demo'&&G.mode!=='online')?suitCh(CH[pi],curSuit()):CH[pi],W/2-82,1,false);P2=mkF(CH[ci],W/2+82,-1,!TWO());G.stage=rnd()*STAGES.length|0;G.round=1;G.score0=G.score;startRound();
  if(skipVs)show('fight');else show('vs');}
 function startArcade(){G.mode='arcade';armCoupon();const o=CH.map((c,i)=>i).filter(i=>i!==G.p1i);for(let i=o.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[o[i],o[j]]=[o[j],o[i]];}G.ladder=o.slice(0,4);G.li=0;G.score=0;beginMatch(G.p1i,o[0]);}
 function startRound(){
@@ -1380,7 +1386,7 @@ function backPick(){if(G.mode==='online'){if(confirm('¿Salir de la sala online?
 function renderBig(){const two=G.mode==='vs2',on=G.mode==='online';
  if(on){const c1=CH[NET.myPick>=0?NET.myPick:G.cur],c2=NET.rvPick>=0?CH[NET.rvPick]:null;drawBig($('#bigP1'),c1);drawBig($('#bigP2'),c2);$('#bigN1').textContent=c1.name;$('#bigN2').textContent=c2?c2.name:'ELIGIENDO...';$('#bigR1').textContent='VOS';$('#bigR2').textContent='RIVAL';return;}
  const c1=G.pick===0?CH[G.cur]:CH[G.p1i],c2=G.pick===1?CH[G.cur]:null;
- drawBig($('#bigP1'),c1);drawBig($('#bigP2'),c2);$('#bigN1').textContent=c1.name;$('#bigN2').textContent=c2?c2.name:(G.mode==='arcade'?'4 RIVALES':'???');
+ drawBig($('#bigP1'),two?c1:suitCh(c1,curSuit()));drawBig($('#bigP2'),c2);$('#bigN1').textContent=c1.name;$('#bigN2').textContent=c2?c2.name:(G.mode==='arcade'?'4 RIVALES':'???');
  $('#bigR1').textContent='1P';$('#bigR2').textContent=two?'2P':'CPU';}
 function renderSelect(){const c=CH[G.cur],two=G.mode==='vs2';if(G.mode==='online'){renderSelectOnline();return;}
  $('#selT').textContent=G.pick===0?(two?'Jugador 1, elegí nomás':'Elegí tu personaje, che'):(two?'Jugador 2, elegí nomás':'¿A quién le das?');
@@ -1398,8 +1404,22 @@ const CUP={reint2:{n:'Reintegro 2x',d:'Te devuelven el doble del saldo pendiente
  terere:{n:'Tereré libre',d:'Tu especial se recarga el doble de rápido.',p:600,lv:1},
  cuotas:{n:'Cuotas sin interés',d:'Bloquear no te descuenta saldo.',p:700,lv:2},
  seguro:{n:'Seguro de saldo',d:'Sobrevivís una vez al golpe final con Gs. 1.000.000.',p:900,lv:3}};
-const CHB=CH.map(c=>Object.assign({},c,{id:c.id+'B',base:c.id,top:'#1b1b22',top2:'#0e0e12',bot:c.dress?'#1b1b22':'#26262e'}));
-let ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null};
+/* ---------- ropero: trajes que se ganan jugando (solo cambian colores de ropa) ---------- */
+const SUITS=[
+ {id:'normal',n:'Normal',top:null,d:'El de siempre.',ok:()=>true,pr:()=>''},
+ {id:'black',n:'Black',top:'#1b1b22',top2:'#0e0e12',bot:'#26262e',d:'Llegá a Cliente Black.',ok:()=>lvOf(ACCT.total)>=3,pr:()=>LV[lvOf(ACCT.total)].n},
+ {id:'dorado',n:'Dorado',top:'#d4af37',top2:'#a8841e',bot:'#5a4a1a',d:'Ganá 10 peleas.',ok:()=>ACCT.wins>=10,pr:()=>Math.min(10,ACCT.wins)+'/10'},
+ {id:'billete',n:'Billete',top:'#3d8b4a',top2:'#2a6a34',bot:'#1f4a26',d:'Terminá el Arcade.',ok:()=>(ACCT.arcades||0)>=1,pr:()=>(ACCT.arcades||0)+'/1'},
+ {id:'analisis',n:'Pijama En Análisis',top:'#8ec5ff',top2:'#6aa0dd',bot:'#b8dcff',d:'Ganá 5 peleas seguidas.',ok:()=>(ACCT.bestStreak||0)>=5,pr:()=>Math.min(5,ACCT.streak||0)+'/5 seguidas'},
+ {id:'albirroja',n:'Albirroja',top:'#d52b1e',top2:'#a01e14',bot:'#f2f2f2',d:'Ganá 25 peleas.',ok:()=>ACCT.wins>=25,pr:()=>Math.min(25,ACCT.wins)+'/25'},
+ {id:'unicornio',n:'Unicornio',top:'#ff7eb6',top2:'#c85a92',bot:'#7ee8fa',d:'Llegá a Cliente Unicornio.',ok:()=>lvOf(ACCT.total)>=4,pr:()=>LV[lvOf(ACCT.total)].n}];
+const SUITC={};
+function suitById(id){return SUITS.find(x=>x.id===id)||SUITS[0];}
+function suitCh(c,id){const su=suitById(id);if(!su.top)return c;const k=c.id+'_'+su.id;
+ return SUITC[k]||(SUITC[k]=Object.assign({},c,{id:k,base:c.id,top:su.top,top2:su.top2,bot:c.dress?su.top:su.bot}));}
+function curSuit(){const su=suitById(ACCT.suit);return su.ok()?su.id:'normal';}
+function newSuits(before){return SUITS.filter(su=>su.ok()&&!before.includes(su.id)).map(su=>su.n);}
+let ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null,suit:'normal',streak:0,bestStreak:0,arcades:0};
 function saveAcct(){try{localStorage.setItem('malobank_acct',JSON.stringify(ACCT));}catch(e){}}
 function loadAcct(){try{const o=JSON.parse(localStorage.getItem('malobank_acct')||'null');if(o&&typeof o.ups==='number')ACCT=Object.assign(ACCT,o);}catch(e){}}
 function lvOf(t){let i=0;LV.forEach((l,k)=>{if(t>=l.min)i=k;});return i;}
@@ -1409,21 +1429,32 @@ function awardUps(win,st){const show=G.mode==='cpu'||G.mode==='arcade';document.
  const hp=G.st.hps,avg=hp.length?hp.reduce((a,b)=>a+b,0)/hp.length:0;
  if(!G.awarded){G.awarded=true;const lv0=lvOf(ACCT.total);
   const base=Math.round(G.st.dmg)*2+(win?150:30)+G.st.perf*200+G.st.maxc*25+(st==='done'?1000:0);G.earned=Math.round(base*LV[lv0].m);
-  ACCT.ups+=G.earned;ACCT.total+=G.earned;ACCT.fights++;if(win)ACCT.wins++;ACCT.sumAvg+=avg;ACCT.nAvg++;ACCT.best=Math.max(ACCT.best,G.st.maxc);saveAcct();
+  const had=SUITS.filter(su=>su.ok()).map(su=>su.id);
+  ACCT.ups+=G.earned;ACCT.total+=G.earned;ACCT.fights++;if(win)ACCT.wins++;ACCT.sumAvg+=avg;ACCT.nAvg++;ACCT.best=Math.max(ACCT.best,G.st.maxc);
+  ACCT.streak=win?(ACCT.streak||0)+1:0;ACCT.bestStreak=Math.max(ACCT.bestStreak||0,ACCT.streak);if(st==='done')ACCT.arcades=(ACCT.arcades||0)+1;
+  G.newSuit=newSuits(had);saveAcct();
   G.lvUp=lvOf(ACCT.total)>lv0?LV[lvOf(ACCT.total)].n:null;}
  $('#rAvg').textContent=gs(avg);$('#rUps').textContent='+'+G.earned+' Ups'+(G.cup?' (usaste '+CUP[G.cup].n+')':'');
- $('#rLv').textContent=G.lvUp?'¡Subiste a '+G.lvUp+'!':LV[lvOf(ACCT.total)].n;}
+ $('#rLv').textContent=(G.lvUp?'¡Subiste a '+G.lvUp+'!':LV[lvOf(ACCT.total)].n)+(G.newSuit&&G.newSuit.length?' · ¡Traje nuevo: '+G.newSuit.join(', ')+'!':'');}
 function renderCup(){const b=$('#cupBtn'),sb=$('#suitBtn');const hide=TWO()||G.pick===1;b.hidden=hide;
  const e=ACCT.eq&&ACCT.inv[ACCT.eq]>0?ACCT.eq:null;ACCT.eq=e;b.textContent='Cupón: '+(e?CUP[e].n+' x'+ACCT.inv[e]:'ninguno');
- sb.hidden=hide||lvOf(ACCT.total)<3;sb.textContent='Traje: '+(G.suit?'Black':'normal');}
+ const own=SUITS.filter(su=>su.ok());sb.hidden=hide||own.length<2;sb.textContent='Traje: '+suitById(curSuit()).n;}
 $('#cupBtn').addEventListener('click',()=>{const owned=Object.keys(CUP).filter(k=>ACCT.inv[k]>0);if(!owned.length){SFX.block();$('#cupBtn').textContent='Canjeá cupones en Mi cuenta';return;}
  const list=[null,...owned];const i=list.indexOf(ACCT.eq);ACCT.eq=list[(i+1)%list.length];saveAcct();SFX.sel();renderCup();});
-$('#suitBtn').addEventListener('click',()=>{G.suit=!G.suit;SFX.sel();renderCup();renderBig();});
+document.getElementById('privAgain').addEventListener('click',e=>{e.preventDefault();if(window.privReset)window.privReset();});
+$('#suitBtn').addEventListener('click',()=>{const own=SUITS.filter(su=>su.ok()).map(su=>su.id);ACCT.suit=own[(own.indexOf(curSuit())+1)%own.length];saveAcct();SFX.sel();renderCup();renderBig();});
+function renderWardrobe(){const w=$('#wardrobe');if(!w)return;w.innerHTML='';const base=CH[G.p1i]||CH[0],cur=curSuit();
+ SUITS.forEach(su=>{const ok=su.ok(),d=document.createElement('button');d.type='button';d.className='suit'+(ok?'':' lock')+(su.id===cur?' on':'');
+  const cv=document.createElement('canvas');cv.width=60;cv.height=80;const x=cv.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(sprite(suitCh(base,su.id),'guard',0,false),14,6,60,80,0,0,60,80);
+  if(!ok){x.globalCompositeOperation='source-atop';x.fillStyle='rgba(10,20,16,.8)';x.fillRect(0,0,60,80);}
+  const b=document.createElement('b');b.textContent=su.n;const p=document.createElement('span');p.textContent=ok?(su.id===cur?'Puesto':'Tocá para ponerlo'):su.d+' '+su.pr();
+  d.append(cv,b,p);if(ok)d.addEventListener('click',()=>{ACCT.suit=su.id;saveAcct();SFX.sel();renderWardrobe();renderCup();});else d.disabled=true;w.appendChild(d);});}
 function renderAcct(){const li=lvOf(ACCT.total),L=LV[li],N=LV[li+1];
  $('#aLv').textContent=L.n;$('#aUps').textContent=ACCT.ups.toLocaleString('es-PY');
  $('#aProg').style.width=(N?Math.min(100,(ACCT.total-L.min)/(N.min-L.min)*100):100)+'%';
  $('#aNext').textContent=N?'Te faltan '+(N.min-ACCT.total).toLocaleString('es-PY')+' Ups para '+N.n:'Llegaste al nivel máximo, che';
  $('#aF').textContent=ACCT.fights;$('#aW').textContent=ACCT.wins;$('#aAvg').textContent=ACCT.nAvg?gs(ACCT.sumAvg/ACCT.nAvg):'Sin peleas todavía';$('#aBest').textContent=ACCT.best?ACCT.best+' golpes':'Sin combos todavía';$('#aPerk').textContent=L.perk;
+ renderWardrobe();
  const sh=$('#shop');sh.innerHTML='';
  Object.entries(CUP).forEach(([k,c])=>{const lock=li<c.lv,d=document.createElement('div');d.className='cup'+(lock?' lock':'');
   const own=ACCT.inv[k]||0;
@@ -1471,7 +1502,7 @@ $('#aboutFoot').addEventListener('click',e=>{e.stopPropagation();SFX.sel();openA
 $('#aboutClose').addEventListener('click',()=>{SFX.sel();closeAbout();});
 $('#wipe').addEventListener('click',()=>{const b=$('#wipe');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='Tocá de nuevo para confirmar';return;}
  try{localStorage.removeItem('malobank');localStorage.removeItem('malobank_acct');localStorage.removeItem('malobank_inst');}catch(e){}
- ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null};G.hi=0;G.suit=false;b.dataset.ok='';b.textContent='Progreso borrado';SFX.ok();$('#hiScore').textContent='RÉCORD 000000';});
+ ACCT={ups:300,total:0,fights:0,wins:0,sumAvg:0,nAvg:0,best:0,inv:{},eq:null,suit:'normal',streak:0,bestStreak:0,arcades:0};G.hi=0;b.dataset.ok='';b.textContent='Progreso borrado';SFX.ok();$('#hiScore').textContent='RÉCORD 000000';});
 /* ---------- menú arcade y demo ---------- */
 function menuItems(){return [...document.querySelectorAll('.mi')].filter(b=>b.offsetParent!==null);}
 function markMenu(){const it=menuItems();it.forEach((b,i)=>b.classList.toggle('on',i===G.mi));if(it[G.mi]&&!isTouch)it[G.mi].focus({preventScroll:true});}
@@ -1693,6 +1724,21 @@ let last=performance.now(),acc=0;
 function frame(now){acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){update();acc-=1000/60;}draw();requestAnimationFrame(frame);}
 requestAnimationFrame(frame);
 
+</script>
+<div id="priv" role="dialog" aria-live="polite" aria-label="Privacidad y cookies" hidden>
+ <p>Usamos el almacenamiento de tu navegador (como las cookies) para guardar tu progreso, y estadísticas anónimas para mejorar el juego. Sin publicidad ni venta de datos. <a href="/privacidad">Más info</a></p>
+ <div class="pb"><button id="privMin" type="button">Solo lo necesario</button><button id="privOk" type="button">Aceptar</button></div>
+</div>
+<script>
+/* aviso de privacidad: las estadísticas de Vercel solo se cargan si la persona acepta */
+(function(){const K='malobank_priv';let v=null;try{v=localStorage.getItem(K);}catch(e){}
+ const stats=()=>{if(document.getElementById('va-s'))return;const s=document.createElement('script');s.id='va-s';s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);};
+ const box=document.getElementById('priv');
+ const pick=val=>{try{localStorage.setItem(K,val);}catch(e){}box.hidden=true;if(val==='todo')stats();};
+ if(v==='todo')stats();else if(v!=='minimo')box.hidden=false;
+ document.getElementById('privOk').addEventListener('click',()=>pick('todo'));
+ document.getElementById('privMin').addEventListener('click',()=>pick('minimo'));
+ window.privReset=()=>{try{localStorage.removeItem(K);}catch(e){}box.hidden=false;};})();
 </script>
 </body>
 </html>
