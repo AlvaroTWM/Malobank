@@ -458,6 +458,40 @@ body[data-scr=fight] #fs{display:flex}
 .h-rnd,.h-hit{position:absolute;top:42%;left:0;right:0;text-align:center;font-family:'Press Start 2P',monospace;font-size:15px;text-shadow:3px 3px 0 var(--ink);z-index:2}
 .h-rnd{color:var(--yel);animation:hrnd 3s steps(1) infinite}.h-hit{color:var(--red);opacity:0;animation:hhit 3s steps(1) infinite}
 @keyframes hrnd{0%{opacity:1}40%{opacity:0}}@keyframes hhit{0%,40%{opacity:0}45%{opacity:1}75%{opacity:0}}
+/* Máquina arcade que envuelve el carrusel */
+#scr-hub{justify-content:center}
+.cab{position:relative;display:flex;flex-direction:column;width:min(620px,100%);height:100%;max-height:900px;background:linear-gradient(90deg,#2a0f22 0 14px,#4a1a3a 14px calc(100% - 14px),#2a0f22 calc(100% - 14px));border:4px solid var(--ink);box-shadow:10px 10px 0 rgba(0,0,0,.45);padding:0 18px}
+.cab::before,.cab::after{content:"";position:absolute;top:0;bottom:0;width:6px;background:repeating-linear-gradient(180deg,var(--red) 0 16px,var(--yel) 16px 32px);opacity:.85}
+.cab::before{left:4px}.cab::after{right:4px}
+.cab-marq{margin:12px -6px 10px;background:linear-gradient(180deg,#ffe98a,var(--yel) 45%,#e0a91c);border:4px solid var(--ink);box-shadow:0 0 22px rgba(255,210,63,.55),inset 0 -4px 0 rgba(0,0,0,.18);text-align:center;padding:10px 6px 8px;flex:0 0 auto}
+.cab-marq b{display:block;font-family:'Press Start 2P',monospace;font-size:clamp(18px,5vw,30px);color:var(--red);text-shadow:3px 3px 0 var(--ink);letter-spacing:2px}
+.cab-marq small{display:block;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--ink);margin-top:7px;letter-spacing:2px}
+.cab-bezel{flex:1 1 auto;min-height:0;background:#111;border:4px solid var(--ink);border-radius:6px;padding:12px;box-shadow:inset 0 0 0 3px #333}
+.cab-screen{position:relative;height:100%;background:radial-gradient(ellipse at 50% 45%,#16402f,#071a12 75%);border-radius:18px/14px;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 8px;container-type:size;box-shadow:inset 0 0 40px rgba(0,0,0,.8)}
+.cab-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(180deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 30% 15%,rgba(255,255,255,.08),transparent 45%);border-radius:inherit}
+.cab-screen .hstage{flex:1 1 auto;height:auto;min-height:0;max-width:none}
+.cab-screen .hcard{--cw:min(250px,60cqw)}
+.cab-screen .hdots{flex:0 0 auto}
+.cab-panel{flex:0 0 auto;margin:10px -10px 0;background:linear-gradient(180deg,#5c2448,#3a1230);border:4px solid var(--ink);border-radius:6px 6px 0 0;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:inset 0 4px 0 rgba(255,255,255,.08)}
+.cab-joy{display:flex;align-items:center;gap:8px}
+.cab-joy .harrow{width:40px;height:40px;background:#2a0f22;border-color:var(--lime);border-radius:50%}
+.cab-stick{position:relative;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle,#222 0 40%,#000 41% 46%,#3a1230 47%);border:3px solid var(--ink)}
+.cab-stick i{position:absolute;left:50%;bottom:50%;width:8px;height:30px;margin-left:-4px;background:#bbb;border:2px solid var(--ink);transform-origin:50% 100%;transition:transform .12s}
+.cab-stick i::before{content:"";position:absolute;left:50%;top:-14px;width:24px;height:24px;margin-left:-12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8a92,var(--red) 55%,#a32030);border:3px solid var(--ink)}
+.cab-stick.l i{transform:rotate(-25deg)}.cab-stick.r i{transform:rotate(25deg)}
+.cab-btns{display:flex;align-items:center;gap:10px}
+.cab-b{font-family:'Press Start 2P',monospace;font-size:9px;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3a8,var(--yel) 55%,#c4931a);color:var(--ink);border:4px solid var(--ink);box-shadow:0 5px 0 #000;cursor:pointer;animation:cabp 1.2s ease-in-out infinite}
+.cab-b:active{transform:translateY(4px);box-shadow:0 1px 0 #000}
+@keyframes cabp{50%{box-shadow:0 5px 0 #000,0 0 18px rgba(255,210,63,.8)}}
+.cab-b2{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9fd0ff,var(--blue) 55%,#2a6aa8);border:4px solid var(--ink);box-shadow:0 4px 0 #000}
+.cab-coin{flex:0 0 auto;margin:0 -10px 12px;background:#2a0f22;border:4px solid var(--ink);border-top:0;padding:8px;display:flex;align-items:center;justify-content:center;gap:12px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--yel);animation:hbl 1.4s steps(1) infinite}
+.cab-slot{display:inline-block;width:8px;height:22px;background:#000;border:3px solid #b8901a;box-shadow:0 0 8px rgba(255,77,90,.7)}
+.cab-screen .hplay{display:none}
+.cab-screen .hinfo{padding-bottom:12px}
+.cab-screen .hinfo p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+#scr-hub .hups{z-index:5;background:var(--ink);padding:5px 7px;border:2px solid var(--yel)}
+@media (max-height:620px){.cab-marq small,.cab-coin{display:none}.cab-marq{margin:8px -6px 6px;padding:6px}.cab-panel{padding:6px 14px}.cab-b{width:58px;height:58px}.cab-screen .hblink{display:none}}
+@media (max-height:440px){.cab{flex-direction:row;flex-wrap:wrap;align-content:stretch;width:min(900px,100%);padding:0 14px}.cab-marq{width:100%;margin:6px -4px 6px}.cab-marq b{font-size:16px}.cab-bezel{flex:1 1 0;height:calc(100% - 60px);padding:6px}.cab-panel{flex:0 0 auto;flex-direction:column;justify-content:center;margin:0 -8px 6px 10px;border-radius:6px;height:calc(100% - 60px)}.cab-joy{flex-direction:column}.cab-stick{display:none}.cab-b{font-size:7px}.cab-screen .hinfo p{display:none}}
 @media (prefers-reduced-motion:reduce){#scr-hub *{animation:none!important;transition:none!important}}
 @media (max-height:520px){#scr-hub h1{display:none}.hinfo p{display:none}.hstage{height:calc(100% - 80px)}}
 </style>
@@ -592,10 +626,19 @@ body[data-scr=fight] #fs{display:flex}
 </section>
 <section id="scr-hub" aria-label="Elegí tu juego">
  <span class="hups" id="hubUps"></span>
- <h1>MALO BANK</h1>
- <p class="hblink">ELEGÍ TU JUEGO</p>
- <div class="hstage" id="hubStage"></div>
- <div class="hnav"><button class="harrow" id="hubPrev" type="button" aria-label="Juego anterior">◄</button><div class="hdots" id="hubDots"></div><button class="harrow" id="hubNext" type="button" aria-label="Juego siguiente">►</button></div>
+ <div class="cab">
+  <div class="cab-marq"><b>MALO BANK</b><small>ARCADE · INTERVENCIÓN TOTAL</small></div>
+  <div class="cab-bezel"><div class="cab-screen">
+   <p class="hblink">ELEGÍ TU JUEGO</p>
+   <div class="hstage" id="hubStage"></div>
+   <div class="hdots" id="hubDots"></div>
+  </div></div>
+  <div class="cab-panel">
+   <div class="cab-joy"><button class="harrow" id="hubPrev" type="button" aria-label="Juego anterior">◄</button><span class="cab-stick" id="hubStick" aria-hidden="true"><i></i></span><button class="harrow" id="hubNext" type="button" aria-label="Juego siguiente">►</button></div>
+   <div class="cab-btns"><button class="cab-b" id="hubA" type="button" aria-label="Jugar el juego elegido">JUGAR</button><span class="cab-b2" aria-hidden="true"></span></div>
+  </div>
+  <div class="cab-coin" aria-hidden="true"><span class="cab-slot"></span>INSERTE UPS<span class="cab-slot"></span></div>
+ </div>
  <div class="htoast" id="hubToast" role="status"></div>
 </section>
 <section class="sheet" id="scr-inst" hidden role="dialog" aria-modal="true" aria-label="Bienvenida">
@@ -1677,11 +1720,13 @@ function hubPlay(i){const g=HUB[i];SFX.ok();if(g.main){closeHub();return;}$('#sc
 function openHub(){$('#hubUps').textContent='UPS '+(ACCT.ups||0).toLocaleString('es-PY');const rec=miniRec();document.querySelectorAll('.hrec[data-id]').forEach(e=>{const v=rec[e.dataset.id];e.textContent=v?'RÉCORD '+v.toLocaleString('es-PY'):'¡NUEVO! ETAPA BONUS';});$('#scr-hub').hidden=false;hubAuto=true;hubIdle=0;hubGo(0);clearInterval(hubT);
  hubT=setInterval(()=>{if(!hubOpen())return;if(hubAuto)hubGo(hubCur+1);else if(++hubIdle>3&&hubCur!==0)hubGo(0);},4000);}
 function closeHub(){$('#scr-hub').hidden=true;clearInterval(hubT);if(G.scr==='title'){openMenu();maybeShowInst();}}
-$('#hubPrev').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubGo(hubCur-1);});
-$('#hubNext').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubGo(hubCur+1);});
+function hubStick(d){const k=$('#hubStick');if(!k)return;k.className='cab-stick '+d;clearTimeout(k._t);k._t=setTimeout(()=>k.className='cab-stick',180);}
+$('#hubPrev').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubStick('l');hubGo(hubCur-1);});
+$('#hubNext').addEventListener('click',()=>{audioUnlock();hubTouch();SFX.sel();hubStick('r');hubGo(hubCur+1);});
+$('#hubA').addEventListener('click',()=>{audioUnlock();hubTouch();hubPlay(hubCur);});
 $('#hubBtn').addEventListener('click',e=>{e.stopPropagation();SFX.ok();if(G.scr==='title'){closeMenu();openHub();}});
 addEventListener('keydown',e=>{if(!hubOpen()||e.repeat)return;const k=e.code;
- if(k==='ArrowLeft'||k==='KeyA'){hubTouch();SFX.sel();hubGo(hubCur-1);}else if(k==='ArrowRight'||k==='KeyD'){hubTouch();SFX.sel();hubGo(hubCur+1);}
+ if(k==='ArrowLeft'||k==='KeyA'){hubTouch();SFX.sel();hubStick('l');hubGo(hubCur-1);}else if(k==='ArrowRight'||k==='KeyD'){hubTouch();SFX.sel();hubStick('r');hubGo(hubCur+1);}
  else if((k==='Enter'||k==='Space'||k==='KeyJ')&&!(e.target&&e.target.tagName==='BUTTON')){audioUnlock();hubTouch();hubPlay(hubCur);}else return;e.preventDefault();e.stopPropagation();},true);
 let hubSx=null;$('#hubStage').addEventListener('pointerdown',e=>hubSx=e.clientX);$('#hubStage').addEventListener('pointerup',e=>{if(hubSx===null)return;const dx=e.clientX-hubSx;hubSx=null;if(Math.abs(dx)>40){hubTouch();SFX.sel();hubGo(hubCur+(dx<0?1:-1));}});
 openHub();
