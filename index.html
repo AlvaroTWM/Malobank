@@ -2172,7 +2172,7 @@ const FMAP=[
 '#.##########.#.##########.#',
 '#.........................#',
 '###########################'];
-const FNAME={pol:'LA POLICÍA',reg:"REGULADOR APE'A",abo:'LA ABOGADA',blq:'ÑA BLOQUEADA'};
+const FNAME={pol:'LA POLICIA',reg:"REGULADOR APE'A",abo:'LA ABOGADA',blq:'ÑA BLOQUEADA'};
 const FWHO={pol:['LA POLICIA','PIDE REINTEGROS'],reg:['REGULADOR','TODO EN ANÁLISIS'],abo:['LA ABOGADA','TRAE PAPELES'],blq:['NA BLOQUEADA','QUIERE SU PLATA']};const FQUOTE={pol:'«¡ALTO AHÍ! TIENE UN REINTEGRO PENDIENTE»',reg:'«LO ANALIZAMOS EN LA PRÓXIMA REUNIÓN»',abo:'«FIRME ACÁ, ACÁ Y ACÁ»',blq:'«¡QUIERO MI PLATA!»'};
 /* Nube de brillitos de la transformación (Unicornio a la Fuga) */
 function fPoof(x,y,t){const r=(26-t)*.7+3,cols=['#fff','#ffd23f','#ff7eb6','#b07cf0'];for(let i=0;i<8;i++){const a=i*Math.PI/4+t*.15;R(Math.round(x+Math.cos(a)*r)-1,Math.round(y+Math.sin(a)*r)-1,t>13?3:2,t>13?3:2,cols[i%4]);}if(t>18){ctx.fillStyle='rgba(255,255,255,'+((t-18)/10)+')';ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fill();}}
