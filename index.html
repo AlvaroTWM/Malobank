@@ -2173,7 +2173,7 @@ const FMAP=[
 '#.........................#',
 '###########################'];
 const FNAME={pol:'LA POLICÍA',reg:"REGULADOR APE'A",abo:'LA ABOGADA',blq:'ÑA BLOQUEADA'};
-const FQUOTE={pol:'«¡ALTO AHÍ! TIENE UN REINTEGRO PENDIENTE»',reg:'«LO ANALIZAMOS EN LA PRÓXIMA REUNIÓN»',abo:'«FIRME ACÁ, ACÁ Y ACÁ»',blq:'«¡QUIERO MI PLATA!»'};
+const FWHO={pol:['LA POLICIA','PIDE REINTEGROS'],reg:['REGULADOR','TODO EN ANÁLISIS'],abo:['LA ABOGADA','TRAE PAPELES'],blq:['NA BLOQUEADA','QUIERE SU PLATA']};const FQUOTE={pol:'«¡ALTO AHÍ! TIENE UN REINTEGRO PENDIENTE»',reg:'«LO ANALIZAMOS EN LA PRÓXIMA REUNIÓN»',abo:'«FIRME ACÁ, ACÁ Y ACÁ»',blq:'«¡QUIERO MI PLATA!»'};
 /* Nube de brillitos de la transformación (Unicornio a la Fuga) */
 function fPoof(x,y,t){const r=(26-t)*.7+3,cols=['#fff','#ffd23f','#ff7eb6','#b07cf0'];for(let i=0;i<8;i++){const a=i*Math.PI/4+t*.15;R(Math.round(x+Math.cos(a)*r)-1,Math.round(y+Math.sin(a)*r)-1,t>13?3:2,t>13?3:2,cols[i%4]);}if(t>18){ctx.fillStyle='rgba(255,255,255,'+((t-18)/10)+')';ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fill();}}
 const FUGA={name:'UNICORNIO A LA FUGA',brand:'TORRE MALO BANK',col:'#ff7eb6',
@@ -2262,7 +2262,7 @@ const FUGA={name:'UNICORNIO A LA FUGA',brand:'TORRE MALO BANK',col:'#ff7eb6',
   // costado derecho: vidas y billetes
   {const rx=FOX+27*FT+(W-FOX-27*FT)/2;PX('VIDAS',rx,34,MC.cream,5,'center');for(let i=0;i<g.lives;i++)mHead('uni',rx-18+i*18,54,22,false);
    PX('BILLETES',rx,84,MC.cream,4,'center');PX(String(g.left),rx,98,'#6cc070',7,'center');
-   PX('TE SIGUEN',rx,124,MC.cream,4,'center');g.en.forEach((e,i)=>{mHead(e.id,rx-15+(i%2)*30,146+(i>>1)*30,24,false);});}
+   PX('TE SIGUEN',rx,118,MC.cream,4,'center');g.en.forEach((e,i)=>{const y=134+i*21,hl=g.fr>0?'#ff7eb6':MC.yel;if(g.fr>0&&mAnim('pony_'+e.id,rx-40,y-13,(G.t>>2)+i,1,false)){}else mHead(e.id,rx-28,y,18,false);PX(FWHO[e.id][0],rx-17,y-1,hl,3,'left',false);if(e.id==='blq')R(rx-17,y-6,3,1,hl);PX(FWHO[e.id][1],rx-17,y+6,'#b8b0c8',3,'left',false);});}
   mHud('UNICORNIO A LA FUGA',String(g.score).padStart(6,'0'));
   if(g.fr>0&&(G.t>>3)%2)PX('¡ESTAMPIDA!',W/2,12,MC.yel,6,'center');
   if(g.ready>0&&g.ph==='play'){R(FOX+9*FT,FOY+11.6*FT,9*FT,FT*1.4,MC.ink);PX('¡A LA FUGA!',FOX+13.5*FT,FOY+12.7*FT,MC.yel,6,'center',false);}
