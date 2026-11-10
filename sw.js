@@ -1,5 +1,5 @@
 /* Malo Bank: service worker para jugar sin internet */
-const VERSION = 'malobank-v19';
+const VERSION = 'malobank-v20';
 const CORE = ['/', '/index.html', '/manifest.webmanifest', '/favicon-v2.png', '/icon-192-v2.png', '/icon-512-v2.png', '/apple-touch-icon-v2.png', '/og.png'];
 
 self.addEventListener('install', e => {
