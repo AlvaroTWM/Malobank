@@ -1273,8 +1273,13 @@ function setSong(name,tr,bpm){const key=(name||'-')+(tr||0);if(MUS.key===key)ret
 function jingle(win){if(!AC||G.muted)return;const seq=win?[72,76,79,84,79,84]:[67,63,60,55];seq.forEach((n,i)=>setTimeout(()=>beep(midi(n),.16,'square',.07),i*140));}
 
 /* ---------- HUD y pantallas ---------- */
+/* ojo pixelado de 11×7 para el contador de espectadores; parpadea cada tanto */
+function drawEye(x,y){const blink=(G.t%240)<8,O='#140c1c';
+ if(blink){R(x,y+3,11,1,O);R(x+1,y+3,9,1,'#f2ead8');R(x,y+3,1,1,O);return;}
+ R(x+3,y,5,1,O);R(x+1,y+1,2,1,O);R(x+8,y+1,2,1,O);R(x,y+2,1,3,O);R(x+10,y+2,1,3,O);R(x+1,y+5,2,1,O);R(x+8,y+5,2,1,O);R(x+3,y+6,5,1,O);
+ R(x+3,y+1,5,5,'#f2ead8');R(x+1,y+2,9,3,'#f2ead8');R(x+4,y+2,3,3,'#4aa8ff');R(x+5,y+3,1,1,O);R(x+4,y+2,1,1,'#ffffff');}
 function drawNetWait(){if(G.scr==='fight'&&G.mode==='watch'){PX('EN VIVO · MALO-'+NET.code,W/2,52,(G.t>>5)%2?'#ff4d5a':'#ffd23f',6,'center');if(NET.stall>40){R(0,H/2-14,W,24,'rgba(0,0,0,.7)');PX('CARGANDO LA PELEA...',W/2,H/2+2,'#ffd23f',8,'center');}}
- if(G.scr==='fight'&&G.mode==='online'&&NET.nv>0)PX('MIRANDO: '+NET.nv,W/2,52,'#9cf',6,'center');
+ if(G.scr==='fight'&&G.mode==='online'&&NET.nv>0){const n=String(NET.nv),x=Math.round(W/2-(11+n.length*6)/2),y=46;drawEye(x,y);PX(n,x+13,y+6,'#f2ead8',6,'left');}
  if(G.mode==='online'&&G.scr==='fight'&&NET.stall>20){R(0,H/2-14,W,24,'rgba(0,0,0,.7)');PX('ESPERANDO A TU RIVAL...',W/2,H/2+2,'#ffd23f',8,'center');}}
 function drawFight(){
  STAGES[G.stage].draw(G.t);
